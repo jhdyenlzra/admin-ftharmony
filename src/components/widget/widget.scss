@@ -1,0 +1,78 @@
+.widget {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    padding: 10px;
+    -webkit-box-shadow: -2px -5px 20px -9px #000000;
+    box-shadow: -2px -5px 10px 1px rgba(201, 201, 201, 0.47);
+    border-radius: 10px;
+    height: 100px;
+
+    .left,
+    .right {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .title {
+            font-weight: bold;
+            font-size: 14px;
+            color: rgb(160, 160, 160);
+        }
+
+        .counter {
+            font-size: 28px;
+            font-weight: 300;
+        }
+
+        .link {
+            width: max-content;
+            font-size: 12px;
+            border-bottom: 1px solid gray;
+        }
+
+        .percentage {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+
+            &.positive {
+                color: green;
+            }
+
+            &.negative {
+                color: red;
+            }
+        }
+
+        /* General icon styling */
+        .icon {
+            font-size: 20px;
+            /* Increased size for better visibility */
+            padding: 5px;
+            border-radius: 5px;
+            align-self: flex-end;
+        }
+
+        /* Specific icon styles for each widget type */
+        .icon.user {
+            color: crimson;
+            background-color: rgba(255, 0, 0, 0.2);
+        }
+
+        .icon.report {
+            color: goldenrod;
+            background-color: rgba(218, 165, 32, 0.2);
+        }
+
+        .icon.educational {
+            color: green;
+            background-color: rgba(0, 128, 0, 0.2);
+        }
+
+        .icon.total {
+            color: blue;
+            background-color: rgba(0, 0, 255, 0.2);
+        }
+    }
+}
