@@ -2,17 +2,6 @@
     background-color: #111;
     color: rgb(156, 156, 156);
 
-.datagrid {
-        .MuiDataGrid-columnHeaders {
-            background-color: #333; // Dark background for headers
-            color: #999; // Light text color for headers
-        }
-
-        .MuiDataGrid-columnHeader {
-            border-bottom: 1px solid #444; // Dark border for headers
-        }
-    }
-    
     .chartGrid {
         stroke: rgba(228, 228, 228, 0.219);
     }
@@ -37,12 +26,6 @@
     .sidebar {
         background-color: #111;
         border-color: #333;
-
-        .top {
-            .logo {
-                color: #999;
-            }
-        }
 
         hr {
             border-color: #333;

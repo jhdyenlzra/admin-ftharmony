@@ -1,0 +1,58 @@
+.postItem {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer; // Make the box cursor interactive
+    margin: 20px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+
+    &:hover {
+        background-color: #f0f4ff; // Change background color on hover
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); // Add a more pronounced shadow
+    }
+
+    .postItemThumbnail img {
+        width: calc(100% - 30px); // Adjust for margins
+        height: 150px;
+        object-fit: cover;
+        margin: 15px;
+    }
+
+    .postItemContent {
+        padding: 15px;
+
+        .postItemTitle h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .postItemFooter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .postItemCategory {
+                padding: 5px 10px;
+                background: #f5f5f5;
+                border-radius: 5px;
+                color: #2a5e98;
+                text-decoration: none;
+                transition: all 0.3s;
+
+                &:hover {
+                    background: #2a5e98;
+                    color: #fff;
+                }
+            }
+        }
+    }
+}

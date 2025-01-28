@@ -1,0 +1,117 @@
+.login-page {
+    display: flex;
+    height: 100vh;
+
+    .image-section {
+        flex: 1;
+        background-image: url("../../assets/harmony-logo.png");
+        background-size: cover;
+        background-position: center;
+    }
+
+    .form-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #f9f9f9;
+        padding: 2rem;
+
+        h1 {
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            color: #2a5e98;
+        }
+
+        p {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            color: #555;
+            text-align: center;
+        }
+
+        form {
+            width: 100%;
+            max-width: 350px;
+            display: flex;
+            flex-direction: column;
+
+            input {
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 1rem;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                font-size: 1rem;
+
+                &:focus {
+                    outline: none;
+                    border-color: #2a5e98;
+                    box-shadow: 0 0 4px rgba(42, 94, 152, 0.3);
+                }
+            }
+
+            button {
+                padding: 12px;
+                background-color: #2a5e98;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                font-size: 1.2rem;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: #21497d;
+                }
+            }
+
+            .error-message {
+                margin-top: 1rem;
+                color: #d9534f;
+                font-size: 0.9rem;
+                text-align: center;
+            }
+        }
+
+        .google-login {
+            margin-top: 1rem;
+            padding: 10px;
+            background-color: #db4437;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            img {
+                margin-right: 10px;
+                width: 20px;
+                height: 20px;
+            }
+
+            &:hover {
+                background-color: #b33128;
+            }
+        }
+
+        .signup-link {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #555;
+
+            span {
+                color: #2a5e98;
+                cursor: pointer;
+                text-decoration: underline;
+
+                &:hover {
+                    color: #21497d;
+                }
+            }
+        }
+    }
+}

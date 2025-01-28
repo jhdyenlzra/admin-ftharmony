@@ -1,7 +1,9 @@
+// src/components/chart/chart.scss
+@import "../../style/global"; // Adjust the path based on your project structure
+
 .chart {
     flex: 4;
-    -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+    @include box-shadow; // Use the mixin
     padding: 10px;
     color: gray;
 

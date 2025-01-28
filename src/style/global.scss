@@ -1,0 +1,10 @@
+// src/styles/global.scss
+
+@mixin box-shadow {
+    -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+    border-radius: 10px;
+}
+
+$primary-color: #2a5e98; // Example variable for primary color
+$secondary-color: #f0f0f0; // Example variable for background color

@@ -7,6 +7,8 @@ import PostAddIcon from '@mui/icons-material/PostAdd';
 import MessageIcon from '@mui/icons-material/Message';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
+import ArticleIcon from '@mui/icons-material/Article';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import {Link} from "react-router-dom";
@@ -27,11 +29,19 @@ const Sidebar = () => {
             <div className="center">
                 <ul>
                     <p className="title">MAIN</p>
+                    <Link to="/home" style={{textDecoration:"none"}}>
                     <li>
                         <DashboardIcon className="icon" />
                         <span>Dashboard</span>
                     </li>
+                    </Link>
                     <p className="title">LISTS</p>
+                    <Link to="/admin-users" style={{textDecoration:"none"}}>
+                    <li>
+                        <AdminPanelSettingsIcon className="icon" />
+                        <span>Admin</span>
+                    </li>
+                    </Link> 
                     <Link to="/users" style={{textDecoration:"none"}}>
                     <li>
                         <GroupIcon className="icon" />
@@ -44,10 +54,12 @@ const Sidebar = () => {
                         <span>Reports</span>
                     </li>
                     </Link>
+                    <Link to="/create" style={{textDecoration:"none"}}>
                     <li>
                         <PostAddIcon className="icon" />
                         <span>Posting</span>
                     </li>
+                    </Link>
                     <li>
                         <MessageIcon className="icon" />
                         <span>Messages</span>
@@ -61,11 +73,19 @@ const Sidebar = () => {
                         <AnalyticsIcon className="icon" />
                         <span>Analytics</span>
                     </li>
+                    <Link to="/posts" style={{textDecoration:"none"}}>
+                    <li>
+                        <ArticleIcon className="icon" />
+                        <span>Articles</span>
+                    </li>
+                    </Link>
                     <p className="title">USER</p>
+                    <Link to="/profile" style={{ textDecoration: "none" }}>
                     <li>
                         <AccountCircleOutlinedIcon className="icon" />
                         <span>Profile</span>
                     </li>
+                    </Link>
                     <li>
                         <LogoutOutlinedIcon className="icon" />
                         <span>Logout</span>
