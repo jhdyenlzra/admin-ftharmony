@@ -4,24 +4,16 @@
     min-height: 100vh;
     background-color: white;
 
-    .top {
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    } 
-
-        .logo-img { 
-            width: 150px;
-            height: auto;
-        }
+    .logo-img {
+        width: 150px;
+        height: auto;
     }
 
     hr {
         height: 0;
         border: 0.5px solid rgb(230, 227, 227);
     }
-    
+
     .center {
         padding-left: 10px;
 
@@ -30,58 +22,117 @@
             margin: 0;
             padding: 0;
 
-        .title {
-            font-size: 10px;
-            font-weight: bold;
-            color: #999;
-            margin-top: 10px;
-            margin-bottom: 5px;
-        }
-
-        li {
-            display: flex;
-            align-items: center;
-            padding: 4px;
-            cursor: pointer;
-
-            &:hover {
-                background-color: #ece8ff;
+            .title {
+                font-size: 10px;
+                font-weight: bold;
+                color: #999;
+                margin-top: 10px;
+                margin-bottom: 5px;
             }
 
-            .icon {
-                font-size: 18px;
-                color: #295e9e;
-            }
+            li {
+                display: flex;
+                align-items: center;
+                padding: 4px;
+                cursor: pointer;
 
-            span {
-                font-size: 13px;
-                font-weight: 600;
-                color: #888;   
-                margin-left: 10px;
-            }
+                &:hover {
+                    background-color: #ece8ff;
+                }
+
+                .icon {
+                    font-size: 18px;
+                    color: #295e9e;
+                }
+
+                span {
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: #888;
+                    margin-left: 10px;
+                }
             }
         }
     }
 
-.bottom {
-    display: flex;
-    align-items: center;
-    margin: 10px;
+    .bottom {
+        display: flex;
+        align-items: center;
+        margin: 10px;
 
-    .colorOption {
-        width: 20px;
-        height: 20px;
-        border-radius: 5px;
-        border: 1px solid #295e9e;
-        cursor: pointer;
-        margin: 5px;
+        .colorOption {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            border: 1px solid #295e9e;
+            cursor: pointer;
+            margin: 5px;
 
-        &:nth-child(1) {
-            background-color: whitesmoke;
+            &:nth-child(1) {
+                background-color: whitesmoke;
+            }
+
+            &:nth-child(2) {
+                background-color: #333;
+            }
         }
+    }
 
-        &:nth-child(2) {
-            background-color: #333;
+    .logoutModal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+
+        .modalContent {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+            p {
+                font-size: 16px;
+                margin-bottom: 20px;
+                color: #333;
+            }
+
+            .modalActions {
+                display: flex;
+                justify-content: space-around;
+
+                .confirmButton {
+                    padding: 10px 20px;
+                    background-color: #4caf50;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: #388e3c;
+                    }
+                }
+
+                .cancelButton {
+                    padding: 10px 20px;
+                    background-color: #f44336;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: #d32f2f;
+                    }
+                }
+            }
         }
     }
 }

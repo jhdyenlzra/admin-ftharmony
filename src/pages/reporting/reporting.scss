@@ -1,71 +1,105 @@
 .reporting {
-  padding: 20px;
+  display: flex;
 
-  .reportingTitle {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #333;
-  }
+  .reportingContainer {
+    flex: 6;
+    padding: 20px;
 
-  .reportTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+    .reportingContent {
+      padding: 20px;
 
-    th, td {
-      padding: 12px;
-      text-align: left;
-      border: 1px solid #ddd;
-    }
-
-    th {
-      background-color: #2a5e98;
-      color: white;
-    }
-
-    td {
-      background-color: #f9f9f9;
-    }
-
-    .dropdown {
-      position: relative;
-      display: inline-block;
-
-      .dropdown-btn {
-        background: none;
-        border: none;
-        font-size: 20px;
-        cursor: pointer;
+      .reportingTitle {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: gray;
       }
 
-      .dropdown-content {
-        display: none;
-        position: absolute;
-        right: 0;
-        background-color: #fff;
-        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-        z-index: 1;
-        min-width: 160px;
-        border: 1px solid #ddd;
-      }
-
-      .dropdown-btn:hover + .dropdown-content,
-      .dropdown-content:hover {
-        display: block;
-      }
-
-      .dropdown-item {
-        padding: 10px;
-        text-align: left;
+      .reportTable {
         width: 100%;
-        cursor: pointer;
-        background-color: #fff;
-        border: none;
-        text-decoration: none;
+        border-collapse: collapse;
+        margin-top: 20px;
 
-        &:hover {
-          background-color: #f1f1f1;
+        th,
+        td {
+          padding: 12px;
+          text-align: left;
+          border: 1px solid #ddd;
+        }
+
+        th {
+          background-color: #2a5e98;
+          color: white;
+        }
+
+        td {
+          background-color: #f9f9f9;
+        }
+
+        .viewButton {
+          padding: 5px 10px;
+          color: white;
+          background-color: #2a5e98;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          margin-right: 5px;
+
+          &:hover {
+            background-color: #21497d;
+          }
+        }
+
+        .statusButton {
+          padding: 5px 10px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+
+          &.real {
+            background-color: #4caf50;
+            color: white;
+
+            &:hover {
+              background-color: #388e3c;
+            }
+          }
+
+          &.fake {
+            background-color: #f44336;
+            color: white;
+
+            &:hover {
+              background-color: #d32f2f;
+            }
+          }
+        }
+      }
+
+      .reportDetails {
+        .backButton {
+          margin-bottom: 20px;
+          padding: 10px 20px;
+          background-color: #2a5e98;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+
+          &:hover {
+            background-color: #21497d;
+          }
+        }
+
+        .detailsSection {
+          h3 {
+            margin-bottom: 10px;
+            color: #2a5e98;
+          }
+
+          p {
+            margin: 5px 0;
+          }
         }
       }
     }
