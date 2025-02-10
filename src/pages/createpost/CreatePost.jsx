@@ -12,33 +12,10 @@ const CreatePost = () => {
   const [category, setCategory] = useState("Uncategorized");
   const [description, setDescription] = useState("");
   const [thumbnail, setThumbnail] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
-
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, 3, false] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }],
-      ["link", "image"],
-      ["clean"],
-    ],
-  };
-
-  const formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "bullet",
-    "indent",
-    "link",
-    "image",
-  ];
 
   const POST_CATEGORIES = [
     "Parenting",
@@ -49,66 +26,114 @@ const CreatePost = () => {
     "Organization",
     "Uncategorized",
   ];
-  
-  // Handle thumbnail upload to Supabase storage
-  const handleThumbnailUpload = async (file) => {
-    const { data, error } = await supabase.storage
-      .from("thumbnails")
-      .upload(`public/${Date.now()}-${file.name}`, file);
 
-    if (error) {
-      setError("Thumbnail upload failed");
+  const modules = {
+    toolbar: [
+      ["bold", "italic", "underline"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image"],
+    ],
+  };
+
+  const handleThumbnailUpload = async (file) => {
+  try {
+    const fileName = `public/${Date.now()}-${file.name}`;
+    const { data, error } = await supabase.storage
+      .from("thumbnails") // Ensure the bucket name is correct
+      .upload(fileName, file);
+
+    console.log("Upload response:", data);
+
+    if (error || !data) {
+      console.error("Thumbnail upload error:", error);
+      setError("Failed to upload thumbnail. Please try again.");
       return null;
     }
 
-    const { publicURL } = supabase.storage.from("thumbnails").getPublicUrl(data.path);
-    return publicURL;
-  };
+    const filePath = data.path; // Use the returned file path
+    console.log("File path used for public URL:", filePath);
 
-  // Handle form submission and post creation
+    // Generate the public URL
+    const publicUrl = `https://${supabase.storageUrl}/storage/v1/object/public/thumbnails/${filePath}`;
+    console.log("Generated public URL:", publicUrl);
+
+    if (!publicUrl) {
+      console.error("Failed to retrieve public URL for thumbnail.");
+      setError("Failed to generate thumbnail URL.");
+      return null;
+    }
+
+    return publicUrl;
+  } catch (err) {
+    console.error("Unexpected error during thumbnail upload:", err);
+    setError("An unexpected error occurred during thumbnail upload.");
+    return null;
+  }
+};
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setSuccess(false);
+    setLoading(true);
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser(); // Ensure user is authenticated
-    if (!user) {
-      setError("You must be logged in to create a post.");
-      return;
-    }
+    try {
+      const { data: user, error: authError } = await supabase.auth.getUser();
 
-    let thumbnailURL = null;
+      if (authError || !user) {
+        console.error("Authentication error:", authError);
+        setError("You must be logged in to create a post.");
+        setLoading(false);
+        return;
+      }
 
-    // Only upload thumbnail if it's selected
-    if (thumbnail) {
-      thumbnailURL = await handleThumbnailUpload(thumbnail);
-      if (!thumbnailURL) return; // Ensure thumbnail upload was successful
-    }
+      let thumbnailURL = null;
+      if (thumbnail) {
+        thumbnailURL = await handleThumbnailUpload(thumbnail);
+        if (!thumbnailURL) {
+          setLoading(false);
+          return;
+        }
+      }
 
-    // Insert the post data into the posts table
-    const { error } = await supabase.from("posts").insert([
-      {
+      // Construct the post payload
+      const postPayload = {
         title,
         category,
         description,
         thumbnail: thumbnailURL,
-        authorID: user.id, // Use authenticated user's ID
-      },
-    ]);
+        authorID: user.user.id,
+      };
 
-    if (error) {
-      setError("Failed to create post.");
-    } else {
+      // Log the post payload
+      console.log("Post payload:", postPayload);
+
+      const { data, error: postError } = await supabase.from("posts").insert([postPayload]).single();
+
+      if (postError) {
+        console.error("Post creation error:", postError);
+        setError("Failed to create post. Please try again.");
+        return;
+      }
+
+      console.log("Post created successfully:", data);
       setSuccess(true);
+
+      // Reset form
       setTitle("");
       setCategory("Uncategorized");
       setDescription("");
       setThumbnail(null);
 
-      // Redirect to the posts page after successful creation
+      // Navigate to posts page
       navigate("/posts");
+    } catch (err) {
+      console.error("Unexpected error during post creation:", err);
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -121,40 +146,53 @@ const CreatePost = () => {
           <h2>Create Post</h2>
           {error && <div className="error-message">{error}</div>}
           {success && <div className="success-message">Post created successfully!</div>}
-          <form className="form createPost__form" onSubmit={handleSubmit}>
-            <input
-              type="text"
-              placeholder="Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              autoFocus
-              className="form__input"
-            />
-            <select
-              name="category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="form__select"
-            >
-              {POST_CATEGORIES.map((cat) => (
-                <option key={cat}>{cat}</option>
-              ))}
-            </select>
-            <ReactQuill
-              className="form__editor"
-              modules={modules}
-              formats={formats}
-              value={description}
-              onChange={setDescription}
-            />
-            <input
-              type="file"
-              onChange={(e) => setThumbnail(e.target.files[0])}
-              accept="image/png, image/jpg, image/jpeg"
-              className="form__file"
-            />
-            <button type="submit" className="btn btn-primary">
-              Create
+          <form onSubmit={handleSubmit} className="createPost__form">
+            <div className="form-group">
+              <label htmlFor="title">Title</label>
+              <input
+                id="title"
+                type="text"
+                placeholder="Enter post title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="category">Category</label>
+              <select
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                required
+              >
+                {POST_CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="description">Description</label>
+              <ReactQuill
+                id="description"
+                value={description}
+                onChange={setDescription}
+                modules={modules}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="thumbnail">Thumbnail</label>
+              <input
+                id="thumbnail"
+                type="file"
+                accept="image/png, image/jpeg"
+                onChange={(e) => setThumbnail(e.target.files[0])}
+              />
+            </div>
+            <button type="submit" disabled={loading} className="btn btn-primary">
+              {loading ? "Creating..." : "Create Post"}
             </button>
           </form>
         </div>

@@ -8,25 +8,50 @@ import "./posts.scss";
 const Posts = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const { data, error } = await supabase.from("posts").select("*");
+      try {
+        const { data, error } = await supabase.from("posts").select("*");
 
-      if (error) {
-        console.error("Error fetching posts:", error);
-      } else {
-        setPosts(data);
+        if (error) {
+          throw error;
+        }
+
+        setPosts(data || []);
+      } catch (error) {
+        setError("Failed to fetch posts. Please try again later.");
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
     fetchPosts();
-  }, []); // Empty array ensures this effect runs only once on mount.
+  }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="posts">
+        <Sidebar />
+        <div className="postsContainer">
+          <Navbar />
+          <div className="loadingMessage">Loading posts...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="posts">
+        <Sidebar />
+        <div className="postsContainer">
+          <Navbar />
+          <div className="errorMessage">{error}</div>
+        </div>
+      </div>
+    );
   }
 
   return (

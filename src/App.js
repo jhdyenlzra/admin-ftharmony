@@ -1,3 +1,10 @@
+import React, { useContext } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { DarkModeContext } from "./context/darkModeContext";
+import { AuthContext } from "./context/AuthContext";
+import "./style/dark.scss";
+
+// Page Imports
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
@@ -10,18 +17,15 @@ import PostDetail from "./pages/postdetail/PostDetail";
 import CreatePost from "./pages/createpost/CreatePost";
 import EditPost from "./pages/editpost/EditPost";
 import Reporting from "./pages/reporting/Reporting";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+// Form Inputs
 import { productInputs, userInputs } from "./formSource";
-import "./style/dark.scss";
-import { useContext } from "react";
-import { DarkModeContext } from "./context/darkModeContext";
-import { AuthContext } from "./context/AuthContext";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
   const { currentUser } = useContext(AuthContext);
 
-  // RequireAuth ensures the route is accessible only when logged in
+  // Protect routes with authentication
   const RequireAuth = ({ children }) => {
     return currentUser ? children : <Navigate to="/login" />;
   };
@@ -30,17 +34,18 @@ function App() {
     <div className={darkMode ? "app dark" : "app"}>
       <BrowserRouter>
         <Routes>
-          {/* Redirect "/" based on authentication */}
+          {/* Authentication Redirect */}
           <Route
             path="/"
             element={
               currentUser ? <Navigate to="/home" /> : <Navigate to="/login" />
             }
           />
+
           {/* Public Routes */}
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
-          
+
           {/* Protected Routes */}
           <Route
             path="home"
@@ -51,6 +56,7 @@ function App() {
             }
           />
 
+          {/* User Management */}
           <Route path="users">
             <Route
               index
@@ -60,7 +66,6 @@ function App() {
                 </RequireAuth>
               }
             />
-            
             <Route
               path=":userId"
               element={
@@ -69,7 +74,6 @@ function App() {
                 </RequireAuth>
               }
             />
-
             <Route
               path="new"
               element={
@@ -80,7 +84,7 @@ function App() {
             />
           </Route>
 
-
+          {/* Product Management */}
           <Route path="products">
             <Route
               index
@@ -90,7 +94,6 @@ function App() {
                 </RequireAuth>
               }
             />
-
             <Route
               path=":productId"
               element={
@@ -99,7 +102,6 @@ function App() {
                 </RequireAuth>
               }
             />
-
             <Route
               path="new"
               element={
@@ -110,7 +112,7 @@ function App() {
             />
           </Route>
 
-
+          {/* Profile */}
           <Route
             path="/profile"
             element={
@@ -118,52 +120,51 @@ function App() {
                 <Profile />
               </RequireAuth>
             }
-            />
+          />
 
-            <Route
-              path="posts"
-              element={
-                <RequireAuth>
-                  <Posts />
-                </RequireAuth>
+          {/* Posts */}
+          <Route
+            path="posts"
+            element={
+              <RequireAuth>
+                <Posts />
+              </RequireAuth>
             }
-            />
-
-            <Route
-              path="/postdetail/:postID"
-              element={
-                <RequireAuth>
-                  <PostDetail />
-                </RequireAuth>
+          />
+          <Route
+            path="/postdetail/:postID"
+            element={
+              <RequireAuth>
+                <PostDetail />
+              </RequireAuth>
             }
-            />
-
-            <Route
+          />
+          <Route
             path="/create"
             element={
               <RequireAuth>
                 <CreatePost />
               </RequireAuth>
             }
-            />
-
-            <Route
+          />
+          <Route
             path="/post/:postID/edit"
             element={
               <RequireAuth>
                 <EditPost />
               </RequireAuth>
             }
-            />
+          />
 
-            <Route
+          {/* Reporting */}
+          <Route
             path="reports"
             element={
               <RequireAuth>
                 <Reporting />
-              </RequireAuth>}
+              </RequireAuth>
+            }
           />
-
         </Routes>
       </BrowserRouter>
     </div>

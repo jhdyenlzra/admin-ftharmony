@@ -5,6 +5,7 @@ import Widget from "../../components/widget/Widget"
 import Featured from "../../components/featured/Featured"
 import Chart from "../../components/chart/Chart"
 import Table from "../../components/table/Table"
+import VerifyAuth from "../../components/VerifyAuth";
 
 const Home = () => {
     return (
@@ -12,6 +13,7 @@ const Home = () => {
             <Sidebar />
             <div className="homeContainer">
                 <Navbar />
+                <VerifyAuth /> {/* Authentication Debugging Tool */}
                 <div className="widgets">
                     <Widget type="user" />
                     <Widget type="report" />
