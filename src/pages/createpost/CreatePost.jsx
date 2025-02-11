@@ -17,6 +17,10 @@ const CreatePost = () => {
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
+
+  console.log(description)
+
+
   const POST_CATEGORIES = [
     "Parenting",
     "Safety",
@@ -37,7 +41,7 @@ const CreatePost = () => {
 
   const handleThumbnailUpload = async (file) => {
   try {
-    const fileName = `public/${Date.now()}-${file.name}`;
+    const fileName = `public/${Date.now()}`;
     const { data, error } = await supabase.storage
       .from("thumbnails") // Ensure the bucket name is correct
       .upload(fileName, file);
@@ -54,7 +58,7 @@ const CreatePost = () => {
     console.log("File path used for public URL:", filePath);
 
     // Generate the public URL
-    const publicUrl = `https://${supabase.storageUrl}/storage/v1/object/public/thumbnails/${filePath}`;
+    const publicUrl = `${supabase.storageUrl}/object/public/thumbnails/${filePath}`;
     console.log("Generated public URL:", publicUrl);
 
     if (!publicUrl) {
@@ -177,6 +181,8 @@ const CreatePost = () => {
               <label htmlFor="description">Description</label>
               <ReactQuill
                 id="description"
+                type="text"
+                placeholder="Enter post description"
                 value={description}
                 onChange={setDescription}
                 modules={modules}
