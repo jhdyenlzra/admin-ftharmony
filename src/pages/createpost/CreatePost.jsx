@@ -17,6 +17,10 @@ const CreatePost = () => {
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
+
+  console.log(description)
+
+
   const POST_CATEGORIES = [
     "Parenting",
     "Safety",
@@ -36,11 +40,11 @@ const CreatePost = () => {
   };
 
   const handleThumbnailUpload = async (file) => {
-    try {
-      const fileName = `${Date.now()}-${file.name}`;
-      const { data, error } = await supabase.storage
-        .from("thumbnails")
-        .upload(fileName, file);
+  try {
+    const fileName = `public/${Date.now()}`;
+    const { data, error } = await supabase.storage
+      .from("thumbnails") // Ensure the bucket name is correct
+      .upload(fileName, file);
 
       if (error || !data) {
         console.error("Thumbnail upload error:", error);
@@ -69,7 +73,30 @@ const CreatePost = () => {
       setError("An unexpected error occurred during thumbnail upload.");
       return null;
     }
-  };
+
+    const filePath = data.path; // Use the returned file path
+    console.log("File path used for public URL:", filePath);
+
+    // Generate the public URL
+    const publicUrl = `${supabase.storageUrl}/object/public/thumbnails/${filePath}`;
+    console.log("Generated public URL:", publicUrl);
+
+    if (!publicUrl) {
+      console.error("Failed to retrieve public URL for thumbnail.");
+      setError("Failed to generate thumbnail URL.");
+      return null;
+    }
+
+    return publicUrl;
+  
+    catch (err) {
+    console.error("Unexpected error during thumbnail upload:", err);
+    setError("An unexpected error occurred during thumbnail upload.");
+    return null;
+  }
+};
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -171,6 +198,8 @@ const CreatePost = () => {
               <label htmlFor="description">Description</label>
               <ReactQuill
                 id="description"
+                type="text"
+                placeholder="Enter post description"
                 value={description}
                 onChange={setDescription}
                 modules={modules}

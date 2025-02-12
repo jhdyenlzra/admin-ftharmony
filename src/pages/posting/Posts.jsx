@@ -42,6 +42,7 @@ const Posts = () => {
         ) : posts.length > 0 ? (
           <div className="postsContent">
             {posts.map((post) => (
+              <>
               <PostItem
                 key={post.id}
                 postID={post.id}
@@ -51,6 +52,8 @@ const Posts = () => {
                 description={post.description}
                 authorID={post.authorID}
               />
+              </>
+
             ))}
           </div>
         ) : (
