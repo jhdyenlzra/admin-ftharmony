@@ -2,13 +2,13 @@
   display: flex;
 
   .postsContainer {
-    flex: 6;
+    flex: 6; // Ensures consistent width with Home page
     padding: 20px;
 
     .postsContent {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
+      gap: 20px; // Ensures proper spacing between post items
     }
 
     .noPostsMessage,
@@ -21,7 +21,7 @@
     }
 
     .errorMessage {
-      color: #d9534f;
+      color: #d9534f; // Consistent error color
     }
   }
 }

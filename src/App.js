@@ -17,6 +17,8 @@ import PostDetail from "./pages/postdetail/PostDetail";
 import CreatePost from "./pages/createpost/CreatePost";
 import EditPost from "./pages/editpost/EditPost";
 import Reporting from "./pages/reporting/Reporting";
+import FakeReports from "./pages/fakereports/FakeReports";
+import RealReports from "./pages/realreports/RealReports";
 
 // Form Inputs
 import { productInputs, userInputs } from "./formSource";
@@ -162,6 +164,22 @@ function App() {
             element={
               <RequireAuth>
                 <Reporting />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="reports/fake"
+            element={
+              <RequireAuth>
+                <FakeReports />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="reports/real"
+            element={
+              <RequireAuth>
+                <RealReports />
               </RequireAuth>
             }
           />

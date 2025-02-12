@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
+import { useNavigate } from "react-router-dom";
 import "./reporting.scss";
 
-// Dummy Data
 const dummyReports = [
   {
     id: 1,
@@ -45,19 +45,54 @@ const dummyReports = [
       },
     },
   },
+  {
+    id: 2,
+    reporterName: "Jane Doe",
+    date: "2025-02-06",
+    address: "456 Elm St, Suburbia",
+    status: "Pending",
+    details: {
+      victimInfo: {
+        fullName: "Mike Brown",
+        age: "8-12",
+        gender: "Male",
+        address: "789 Pine St, Townsville",
+        relationship: "Sibling",
+        condition: "Signs of malnutrition and anxiety",
+      },
+      abuserInfo: {
+        fullName: "Unknown",
+        physicalDescription: "N/A",
+        relationship: "N/A",
+        address: "N/A",
+        history: "Unknown",
+      },
+      incidentDetails: {
+        dateTime: "2025-02-05 3:00 PM",
+        location: "School",
+        type: ["Neglect"],
+        description: "The child appears malnourished and anxious.",
+        evidence: ["Photo2.jpg"],
+      },
+      witnessInfo: {
+        names: "Teacher",
+        statement: "Noticed signs of neglect over the past month.",
+      },
+      reporterInfo: {
+        name: "Jane Doe",
+        contact: "jane.doe@example.com",
+        relationship: "Teacher",
+      },
+    },
+  },
 ];
 
 const Reporting = () => {
-  const [reports, setReports] = useState(dummyReports);
+  const [reports] = useState(dummyReports);
   const [selectedReport, setSelectedReport] = useState(null);
+  const navigate = useNavigate();
 
-  const handleReportStatusChange = (id, status) => {
-    setReports((prev) =>
-      prev.map((report) =>
-        report.id === id ? { ...report, status } : report
-      )
-    );
-  };
+  const handleBack = () => setSelectedReport(null);
 
   return (
     <div className="reporting">
@@ -65,104 +100,141 @@ const Reporting = () => {
       <div className="reportingContainer">
         <Navbar />
         <div className="reportingContent">
-          <h1 className="reportingTitle">Reports</h1>
           {selectedReport ? (
             <div className="reportDetails">
-              <h2>Report Details</h2>
-              <button
-                className="backButton"
-                onClick={() => setSelectedReport(null)}
-              >
+              <button className="backButton" onClick={handleBack}>
                 Back to List
               </button>
-
-              {/* Victim's Information */}
+              <h2>Report Details</h2>
               <div className="detailsSection">
                 <h3>Victim's Information</h3>
-                <p><strong>Full Name:</strong> {selectedReport.details.victimInfo.fullName || "Anonymous"}</p>
-                <p><strong>Age:</strong> {selectedReport.details.victimInfo.age}</p>
-                <p><strong>Gender:</strong> {selectedReport.details.victimInfo.gender}</p>
-                <p><strong>Address:</strong> {selectedReport.details.victimInfo.address}</p>
-                <p><strong>Condition:</strong> {selectedReport.details.victimInfo.condition}</p>
+                <p>
+                  <strong>Full Name:</strong> {selectedReport.details.victimInfo.fullName}
+                </p>
+                <p>
+                  <strong>Age:</strong> {selectedReport.details.victimInfo.age}
+                </p>
+                <p>
+                  <strong>Gender:</strong> {selectedReport.details.victimInfo.gender}
+                </p>
+                <p>
+                  <strong>Address:</strong> {selectedReport.details.victimInfo.address}
+                </p>
+                <p>
+                  <strong>Condition:</strong> {selectedReport.details.victimInfo.condition}
+                </p>
               </div>
-
-              {/* Abuser's Information */}
               <div className="detailsSection">
                 <h3>Abuser's Information</h3>
-                <p><strong>Full Name:</strong> {selectedReport.details.abuserInfo.fullName || "Unknown"}</p>
-                <p><strong>Physical Description:</strong> {selectedReport.details.abuserInfo.physicalDescription}</p>
-                <p><strong>Relationship:</strong> {selectedReport.details.abuserInfo.relationship}</p>
-                <p><strong>Address:</strong> {selectedReport.details.abuserInfo.address || "Unknown"}</p>
-                <p><strong>Known History:</strong> {selectedReport.details.abuserInfo.history}</p>
+                <p>
+                  <strong>Full Name:</strong> {selectedReport.details.abuserInfo.fullName}
+                </p>
+                <p>
+                  <strong>Physical Description:</strong> {selectedReport.details.abuserInfo.physicalDescription}
+                </p>
+                <p>
+                  <strong>Relationship:</strong> {selectedReport.details.abuserInfo.relationship}
+                </p>
+                <p>
+                  <strong>Address:</strong> {selectedReport.details.abuserInfo.address}
+                </p>
+                <p>
+                  <strong>Known History:</strong> {selectedReport.details.abuserInfo.history}
+                </p>
               </div>
-
-              {/* Incident Details */}
               <div className="detailsSection">
                 <h3>Incident Details</h3>
-                <p><strong>Date & Time:</strong> {selectedReport.details.incidentDetails.dateTime}</p>
-                <p><strong>Location:</strong> {selectedReport.details.incidentDetails.location}</p>
-                <p><strong>Type:</strong> {selectedReport.details.incidentDetails.type.join(", ")}</p>
-                <p><strong>Description:</strong> {selectedReport.details.incidentDetails.description}</p>
-                <p><strong>Evidence:</strong> {selectedReport.details.incidentDetails.evidence.join(", ")}</p>
+                <p>
+                  <strong>Date & Time:</strong> {selectedReport.details.incidentDetails.dateTime}
+                </p>
+                <p>
+                  <strong>Location:</strong> {selectedReport.details.incidentDetails.location}
+                </p>
+                <p>
+                  <strong>Type:</strong> {selectedReport.details.incidentDetails.type.join(", ")}
+                </p>
+                <p>
+                  <strong>Description:</strong> {selectedReport.details.incidentDetails.description}
+                </p>
+                <p>
+                  <strong>Evidence:</strong> {selectedReport.details.incidentDetails.evidence.join(", ")}
+                </p>
               </div>
-
-              {/* Witness Information */}
               <div className="detailsSection">
                 <h3>Witness Information</h3>
-                <p><strong>Names:</strong> {selectedReport.details.witnessInfo.names || "Anonymous"}</p>
-                <p><strong>Statement:</strong> {selectedReport.details.witnessInfo.statement}</p>
+                <p>
+                  <strong>Names:</strong> {selectedReport.details.witnessInfo.names}
+                </p>
+                <p>
+                  <strong>Statement:</strong> {selectedReport.details.witnessInfo.statement}
+                </p>
               </div>
-
-              {/* Reporter's Information */}
               <div className="detailsSection">
                 <h3>Reporter Information</h3>
-                <p><strong>Name:</strong> {selectedReport.details.reporterInfo.name || "Anonymous"}</p>
-                <p><strong>Contact:</strong> {selectedReport.details.reporterInfo.contact || "N/A"}</p>
-                <p><strong>Relationship:</strong> {selectedReport.details.reporterInfo.relationship}</p>
+                <p>
+                  <strong>Name:</strong> {selectedReport.details.reporterInfo.name}
+                </p>
+                <p>
+                  <strong>Contact:</strong> {selectedReport.details.reporterInfo.contact}
+                </p>
+                <p>
+                  <strong>Relationship:</strong> {selectedReport.details.reporterInfo.relationship}
+                </p>
+              </div>
+              <div className="detailsSection actions">
+                <button className="statusButton real" onClick={() => navigate("/reports/real")}>
+                  Mark as Real
+                </button>
+                <button className="statusButton fake" onClick={() => navigate("/reports/fake")}>
+                  Mark as Fake
+                </button>
               </div>
             </div>
           ) : (
-            <table className="reportTable">
-              <thead>
-                <tr>
-                  <th>Reporter Name</th>
-                  <th>Date</th>
-                  <th>Address</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reports.map((report) => (
-                  <tr key={report.id}>
-                    <td>{report.reporterName}</td>
-                    <td>{report.date}</td>
-                    <td>{report.address}</td>
-                    <td>{report.status}</td>
-                    <td>
-                      <button
-                        className="viewButton"
-                        onClick={() => setSelectedReport(report)}
-                      >
-                        View
-                      </button>
-                      <button
-                        className="statusButton real"
-                        onClick={() => handleReportStatusChange(report.id, "Real")}
-                      >
-                        Mark as Real
-                      </button>
-                      <button
-                        className="statusButton fake"
-                        onClick={() => handleReportStatusChange(report.id, "Fake")}
-                      >
-                        Mark as Fake
-                      </button>
-                    </td>
+            <>
+              <h1 className="reportingTitle">Reports</h1>
+              <table className="reportTable">
+                <thead>
+                  <tr>
+                    <th>Reporter Name</th>
+                    <th>Date</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {reports.map((report) => (
+                    <tr key={report.id}>
+                      <td>{report.reporterName}</td>
+                      <td>{report.date}</td>
+                      <td>{report.address}</td>
+                      <td>{report.status}</td>
+                      <td>
+                        <button
+                          className="viewButton"
+                          onClick={() => setSelectedReport(report)}
+                        >
+                          View
+                        </button>
+                        <button
+                          className="statusButton real"
+                          onClick={() => navigate("/reports/real")}
+                        >
+                          Mark as Real
+                        </button>
+                        <button
+                          className="statusButton fake"
+                          onClick={() => navigate("/reports/fake")}
+                        >
+                          Mark as Fake
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )}
         </div>
       </div>

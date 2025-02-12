@@ -1,0 +1,19 @@
+.fakereports {
+    display: flex;
+
+    .fakereportsContainer {
+        flex: 6;
+        padding: 20px;
+
+        .fakereportsContent {
+            padding: 20px;
+            background-color: #f9f9f9;
+
+            .fakereportsTitle {
+                font-size: 24px;
+                font-weight: bold;
+                color: red;
+            }
+        }
+    }
+}

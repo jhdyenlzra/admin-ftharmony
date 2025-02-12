@@ -36,42 +36,40 @@ const CreatePost = () => {
   };
 
   const handleThumbnailUpload = async (file) => {
-  try {
-    const fileName = `public/${Date.now()}-${file.name}`;
-    const { data, error } = await supabase.storage
-      .from("thumbnails") // Ensure the bucket name is correct
-      .upload(fileName, file);
+    try {
+      const fileName = `${Date.now()}-${file.name}`;
+      const { data, error } = await supabase.storage
+        .from("thumbnails")
+        .upload(fileName, file);
 
-    console.log("Upload response:", data);
+      if (error || !data) {
+        console.error("Thumbnail upload error:", error);
+        setError("Failed to upload thumbnail. Please try again.");
+        return null;
+      }
 
-    if (error || !data) {
-      console.error("Thumbnail upload error:", error);
-      setError("Failed to upload thumbnail. Please try again.");
+      const filePath = data.path;
+      console.log("File path used for public URL:", filePath);
+
+      // Correct way to retrieve the public URL
+      const { data: publicURL, error: urlError } = supabase.storage
+        .from("thumbnails")
+        .getPublicUrl(filePath);
+
+      if (urlError || !publicURL) {
+        console.error("Failed to retrieve public URL:", urlError);
+        setError("Failed to generate thumbnail URL.");
+        return null;
+      }
+
+      console.log("Generated public URL:", publicURL.publicUrl);
+      return publicURL.publicUrl;
+    } catch (err) {
+      console.error("Unexpected error during thumbnail upload:", err);
+      setError("An unexpected error occurred during thumbnail upload.");
       return null;
     }
-
-    const filePath = data.path; // Use the returned file path
-    console.log("File path used for public URL:", filePath);
-
-    // Generate the public URL
-    const publicUrl = `https://${supabase.storageUrl}/storage/v1/object/public/thumbnails/${filePath}`;
-    console.log("Generated public URL:", publicUrl);
-
-    if (!publicUrl) {
-      console.error("Failed to retrieve public URL for thumbnail.");
-      setError("Failed to generate thumbnail URL.");
-      return null;
-    }
-
-    return publicUrl;
-  } catch (err) {
-    console.error("Unexpected error during thumbnail upload:", err);
-    setError("An unexpected error occurred during thumbnail upload.");
-    return null;
-  }
-};
-
-
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -98,7 +96,6 @@ const CreatePost = () => {
         }
       }
 
-      // Construct the post payload
       const postPayload = {
         title,
         category,
@@ -107,7 +104,6 @@ const CreatePost = () => {
         authorID: user.user.id,
       };
 
-      // Log the post payload
       console.log("Post payload:", postPayload);
 
       const { data, error: postError } = await supabase.from("posts").insert([postPayload]).single();
@@ -121,13 +117,11 @@ const CreatePost = () => {
       console.log("Post created successfully:", data);
       setSuccess(true);
 
-      // Reset form
       setTitle("");
       setCategory("Uncategorized");
       setDescription("");
       setThumbnail(null);
 
-      // Navigate to posts page
       navigate("/posts");
     } catch (err) {
       console.error("Unexpected error during post creation:", err);

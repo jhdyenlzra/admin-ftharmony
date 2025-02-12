@@ -30,36 +30,16 @@ const Posts = () => {
     fetchPosts();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="posts">
-        <Sidebar />
-        <div className="postsContainer">
-          <Navbar />
-          <div className="loadingMessage">Loading posts...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="posts">
-        <Sidebar />
-        <div className="postsContainer">
-          <Navbar />
-          <div className="errorMessage">{error}</div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="posts">
       <Sidebar />
       <div className="postsContainer">
         <Navbar />
-        {posts.length > 0 ? (
+        {loading ? (
+          <div className="loadingMessage">Loading posts...</div>
+        ) : error ? (
+          <div className="errorMessage">{error}</div>
+        ) : posts.length > 0 ? (
           <div className="postsContent">
             {posts.map((post) => (
               <PostItem
