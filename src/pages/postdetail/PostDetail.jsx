@@ -63,9 +63,8 @@ const PostDetail = () => {
             <img src={post.thumbnail} alt={post.title} />
           </div>
         )}
-        <div className="post-detail__content">
-          <p>{post.description}</p>
-        </div>
+      <div className="post-detail__content" dangerouslySetInnerHTML={{ __html: post.description }} />
+
       </div>
     </section>
   );
