@@ -17,10 +17,6 @@ const CreatePost = () => {
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
-
-  console.log(description)
-
-
   const POST_CATEGORIES = [
     "Parenting",
     "Safety",
@@ -40,11 +36,13 @@ const CreatePost = () => {
   };
 
   const handleThumbnailUpload = async (file) => {
-  try {
-    const fileName = `public/${Date.now()}`;
-    const { data, error } = await supabase.storage
-      .from("thumbnails") // Ensure the bucket name is correct
-      .upload(fileName, file);
+    try {
+      const fileName = `public/${Date.now()}`;
+      const { data, error } = await supabase.storage
+        .from("thumbnails") // Ensure the bucket name is correct
+        .upload(fileName, file);
+
+      console.log("Upload response:", data);
 
       if (error || !data) {
         console.error("Thumbnail upload error:", error);
@@ -52,51 +50,26 @@ const CreatePost = () => {
         return null;
       }
 
-      const filePath = data.path;
+      const filePath = data.path; // Use the returned file path
       console.log("File path used for public URL:", filePath);
 
-      // Correct way to retrieve the public URL
-      const { data: publicURL, error: urlError } = supabase.storage
-        .from("thumbnails")
-        .getPublicUrl(filePath);
+      // Generate the public URL
+      const publicUrl = `${supabase.storageUrl}/object/public/thumbnails/${filePath}`;
+      console.log("Generated public URL:", publicUrl);
 
-      if (urlError || !publicURL) {
-        console.error("Failed to retrieve public URL:", urlError);
+      if (!publicUrl) {
+        console.error("Failed to retrieve public URL for thumbnail.");
         setError("Failed to generate thumbnail URL.");
         return null;
       }
 
-      console.log("Generated public URL:", publicURL.publicUrl);
-      return publicURL.publicUrl;
+      return publicUrl;
     } catch (err) {
       console.error("Unexpected error during thumbnail upload:", err);
       setError("An unexpected error occurred during thumbnail upload.");
       return null;
     }
-
-    const filePath = data.path; // Use the returned file path
-    console.log("File path used for public URL:", filePath);
-
-    // Generate the public URL
-    const publicUrl = `${supabase.storageUrl}/object/public/thumbnails/${filePath}`;
-    console.log("Generated public URL:", publicUrl);
-
-    if (!publicUrl) {
-      console.error("Failed to retrieve public URL for thumbnail.");
-      setError("Failed to generate thumbnail URL.");
-      return null;
-    }
-
-    return publicUrl;
-  
-    catch (err) {
-    console.error("Unexpected error during thumbnail upload:", err);
-    setError("An unexpected error occurred during thumbnail upload.");
-    return null;
-  }
-};
-
-
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -123,6 +96,7 @@ const CreatePost = () => {
         }
       }
 
+      // Construct the post payload
       const postPayload = {
         title,
         category,
@@ -131,9 +105,13 @@ const CreatePost = () => {
         authorID: user.user.id,
       };
 
+      // Log the post payload
       console.log("Post payload:", postPayload);
 
-      const { data, error: postError } = await supabase.from("posts").insert([postPayload]).single();
+      const { data, error: postError } = await supabase
+        .from("posts")
+        .insert([postPayload])
+        .single();
 
       if (postError) {
         console.error("Post creation error:", postError);
@@ -144,11 +122,13 @@ const CreatePost = () => {
       console.log("Post created successfully:", data);
       setSuccess(true);
 
+      // Reset form
       setTitle("");
       setCategory("Uncategorized");
       setDescription("");
       setThumbnail(null);
 
+      // Navigate to posts page
       navigate("/posts");
     } catch (err) {
       console.error("Unexpected error during post creation:", err);
@@ -166,7 +146,9 @@ const CreatePost = () => {
         <div className="createPost__content">
           <h2>Create Post</h2>
           {error && <div className="error-message">{error}</div>}
-          {success && <div className="success-message">Post created successfully!</div>}
+          {success && (
+            <div className="success-message">Post created successfully!</div>
+          )}
           <form onSubmit={handleSubmit} className="createPost__form">
             <div className="form-group">
               <label htmlFor="title">Title</label>
@@ -198,8 +180,6 @@ const CreatePost = () => {
               <label htmlFor="description">Description</label>
               <ReactQuill
                 id="description"
-                type="text"
-                placeholder="Enter post description"
                 value={description}
                 onChange={setDescription}
                 modules={modules}
@@ -214,7 +194,11 @@ const CreatePost = () => {
                 onChange={(e) => setThumbnail(e.target.files[0])}
               />
             </div>
-            <button type="submit" disabled={loading} className="btn btn-primary">
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary"
+            >
               {loading ? "Creating..." : "Create Post"}
             </button>
           </form>
