@@ -12,7 +12,6 @@ import MessageIcon from "@mui/icons-material/Message";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import ArticleIcon from "@mui/icons-material/Article";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import "./sidebar.scss";
@@ -51,12 +50,6 @@ const Sidebar = () => {
             </li>
           </Link>
           <p className="title">LISTS</p>
-          <Link to="/admin-users" style={{ textDecoration: "none" }}>
-            <li>
-              <AdminPanelSettingsIcon className="icon" />
-              <span>Admin</span>
-            </li>
-          </Link>
           <Link to="/users" style={{ textDecoration: "none" }}>
             <li>
               <GroupIcon className="icon" />

@@ -11,15 +11,36 @@
         align-items: center;
         justify-content: space-between;
 
-        .link {
-            text-decoration: none;
-            color: green;
-            font-size: 16px;
-            font-weight: 400;
-            border: 1px solid green;
-            padding: 5px;
-            border-radius: 5px;
-            cursor: pointer;
+        .actionButtons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+
+            .bulkDeleteButton {
+                padding: 5px 10px;
+                border-radius: 5px;
+                color: white;
+                background-color: crimson;
+                cursor: pointer;
+                border: none;
+                font-size: 14px;
+                transition: background-color 0.3s;
+
+                &:hover {
+                    background-color: darkred;
+                }
+            }
+
+            .link {
+                text-decoration: none;
+                color: green;
+                font-size: 16px;
+                font-weight: 400;
+                border: 1px solid green;
+                padding: 5px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
         }
     }
 

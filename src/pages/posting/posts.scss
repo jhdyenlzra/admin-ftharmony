@@ -3,12 +3,17 @@
 
   .postsContainer {
     flex: 6; // Ensures consistent width with Home page
-    padding: 20px;
-
+    
     .postsContent {
+      margin: 20px; // Add margin around the content
+      padding: 20px;
+      background-color: #f4f6f9; // Light background like in reporting
+      border-radius: 10px; // Rounded corners
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); // Subtle shadow
+      
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px; // Ensures proper spacing between post items
+      gap: 20px; // Spacing between post items
     }
 
     .noPostsMessage,
@@ -21,7 +26,7 @@
     }
 
     .errorMessage {
-      color: #d9534f; // Consistent error color
+      color: #d9534f;
     }
   }
 }

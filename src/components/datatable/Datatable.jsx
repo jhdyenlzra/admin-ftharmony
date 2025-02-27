@@ -8,7 +8,7 @@ import { supabase } from "../../supabaseClient";
 const Datatable = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -23,23 +23,47 @@ const Datatable = () => {
     }
   };
 
-
   useEffect(() => {
     fetchUsers();
   }, []);
-
 
   const handleDelete = async (id) => {
     try {
       setData(data.filter((item) => item.id !== id));
       const { error } = await supabase.from('users').delete().eq('user_id', id);
       if (error) throw error;
-      } catch (err) {
+    } catch (err) {
       console.error('Error deleting user:', err);
       fetchUsers(); // Refresh data on delete error
     }
   };
 
+  const handleBulkDelete = async () => {
+    if (selectedRows.length === 0) return;
+    
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete ${selectedRows.length} selected users?`
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      // Delete from Supabase
+      const { error } = await supabase
+        .from('users')
+        .delete()
+        .in('user_id', selectedRows);
+
+      if (error) throw error;
+
+      // Update local state
+      setData(data.filter(item => !selectedRows.includes(item.id)));
+      setSelectedRows([]); // Clear selection
+    } catch (err) {
+      console.error('Error deleting users:', err);
+      fetchUsers(); // Refresh data on error
+    }
+  };
 
   const actionColumn = [
     {
@@ -65,21 +89,34 @@ const Datatable = () => {
     <div className="datatable">
       <div className="datatableTitle">
         Manage Users
-        <Link to="/users/new" className="link">
-          Add New User
-        </Link>
+        <div className="actionButtons">
+          {selectedRows.length > 0 && (
+            <button 
+              className="bulkDeleteButton"
+              onClick={handleBulkDelete}
+            >
+              Delete Selected ({selectedRows.length})
+            </button>
+          )}
+          <Link to="/users/new" className="link">
+            Add New User
+          </Link>
+        </div>
       </div>
       {loading ? (
-        <div>Loading...</div> // Loading state display
+        <div>Loading...</div>
       ) : (
         <DataGrid
           className="datagrid"
           rows={data}
           columns={userColumns.concat(actionColumn)}
-          pageSize={3}
+          pageSize={9}
           rowsPerPageOptions={[9]}
           checkboxSelection
           disableSelectionOnClick
+          onSelectionModelChange={(newSelection) => {
+            setSelectedRows(newSelection);
+          }}
         />
       )}
     </div>

@@ -1,5 +1,5 @@
 export const reportColumns = [
-    { field: "id", headerName: "ID", width: 350 },
+    { field: "id", headerName: "ID", width: 100 },
     {
       field: "reporter",
       headerName: "Reporter",
@@ -11,13 +11,13 @@ export const reportColumns = [
       width: 300,
     },
     {
-      field: "status",
-      headerName: "Status",
+      field: "reportType",
+      headerName: "Report Type",
       width: 160,
       renderCell: (params) => {
         return (
-          <div className={`cellWithStatus ${params.row.status}`}>
-            {params.row.status}
+          <div className={`cellWithStatus ${params.row.reportType}`}>
+            {params.row.reportType}
           </div>
         );
       },

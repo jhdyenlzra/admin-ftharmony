@@ -118,3 +118,36 @@ export const productInputs = [
     placeholder: "in stock",
   },
 ];
+
+export const reportInputs = [
+  {
+    id: "reporterName",
+    label: "Reporter Name",
+    type: "text",
+    placeholder: "Enter reporter name",
+  },
+  {
+    id: "reportedPerson",
+    label: "Reported Person",
+    type: "text",
+    placeholder: "Enter reported person name",
+  },
+  {
+    id: "relationship",
+    label: "Relationship",
+    type: "text",
+    placeholder: "Enter relationship",
+  },
+  {
+    id: "description",
+    label: "Description",
+    type: "text",
+    placeholder: "Enter report description",
+  },
+  {
+    id: "status",
+    label: "Status",
+    type: "select",
+    options: ["Pending", "In-Review", "Resolved"],
+  },
+];

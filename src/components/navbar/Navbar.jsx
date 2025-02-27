@@ -15,66 +15,63 @@ const Navbar = ({ avatarUpdated }) => {
   const [avatar, setAvatar] = useState(null);
   const [user, setUser] = useState(null);
 
-  // Fetch user profile when the component mounts or avatar is updated
+  const createDefaultProfile = async (userId, email) => {
+    try {
+      const { error } = await supabase.from("users").insert([
+        {
+          id: userId,
+          email: email,
+          full_name: "New User", // Default name
+          avatar_url: null,
+          created_at: new Date(),
+        },
+      ]);
+
+      if (error) {
+        throw error;
+      }
+
+      console.log("Default profile created successfully.");
+    } catch (err) {
+      console.error("Error creating default profile:", err);
+    }
+  };
+
   useEffect(() => {
-
-    const createDefaultProfile = async (userId, email) => {
-  try {
-    const { error } = await supabase.from("users").insert([
-      {
-        id: userId,
-        email: email,
-        full_name: "New User", // Default name
-        avatar_url: null,
-        created_at: new Date(),
-      },
-    ]);
-
-    if (error) {
-      throw error;
-    }
-
-    console.log("Default profile created successfully.");
-  } catch (err) {
-    console.error("Error creating default profile:", err);
-  }
-};
-
     const fetchUserProfile = async () => {
-  try {
-    const { data: session } = await supabase.auth.getSession();
-    if (!session?.session?.user) {
-      console.error("User not authenticated.");
-      return;
-    }
+      try {
+        const { data: session } = await supabase.auth.getSession();
+        if (!session?.session?.user) {
+          console.error("User not authenticated.");
+          return;
+        }
 
-    const userId = session.session.user.id;
-    setUser(session.session.user);
+        const userId = session.session.user.id;
+        setUser(session.session.user);
 
-    const { data: profile, error } = await supabase
-      .from("users")
-      .select("full_name, avatar_url")
-      .eq("id", userId)
-      .single();
+        const { data: profile, error } = await supabase
+          .from("users")
+          .select("full_name, avatar_url")
+          .eq("id", userId)
+          .single();
 
-    if (error && error.code === "PGRST116") {
-      console.warn("No profile found for the user.");
-      // Optionally, create a new profile for the user here.
-      return;
-    }
+        if (error && error.code === "PGRST116") {
+          console.warn("No profile found for the user. Creating default profile...");
+          await createDefaultProfile(userId, session.session.user.email);
+          return;
+        }
 
-    if (error) {
-      throw error;
-    }
+        if (error) {
+          throw error;
+        }
 
-    if (profile) {
-      setAvatar(profile.avatar_url || "../../assets/avatar.jpg"); // Default avatar
-    }
-  } catch (error) {
-    console.error("Error fetching user profile:", error);
-  }
-};
-
+        if (profile) {
+          setAvatar(profile.avatar_url || "../../assets/avatar.jpg"); // Default avatar
+        }
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
 
     fetchUserProfile();
   }, [avatarUpdated]); // Re-fetch when avatarUpdated changes
@@ -117,7 +114,7 @@ const Navbar = ({ avatarUpdated }) => {
           </div>
           <Link to="/profile" className="item">
             <img
-              src={avatar} // Dynamically updated avatar
+              src={avatar || "../../assets/avatar.jpg"} // Default to a placeholder avatar if none exists
               alt={`${user?.email || "Profile"} Logo`}
               className="avatar"
             />

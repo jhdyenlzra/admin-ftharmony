@@ -1,103 +1,145 @@
-.datatable {
-    height: 600px;
-    padding: 20px;
-  
-    .datatableTitle {
-      width: 100%;
-      font-size: 24px;
-      color: gray;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-  
-      .link {
-        text-decoration: none;
-        color: #2a5e98;
-        font-size: 16px;
-        font-weight: 400;
-        border: 1px solid #2a5e98;
+.list {
+  display: flex;
+  width: 100%;
+  height: 100%;
+
+  .listContainer {
+    flex: 6;
+    height: 100%;
+
+    .datatable {
+      height: 100%;
+      padding: 20px;
+      background-color: #f4f6f9;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      
+      // Disable the default hover effect on the entire row
+      .MuiDataGrid-row {
+        &:hover {
+          background-color: transparent !important;
+        }
+      }
+
+      // Prevent cell hover effect
+      .MuiDataGrid-cell {
+        &:hover {
+          background-color: transparent !important;
+        }
+      }
+
+      .datatableTitle {
+        width: 100%;
+        font-size: 24px;
+        color: #555;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .filterButtons {
+          display: flex;
+          gap: 10px;
+
+          .filterButton {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            background: white;
+
+            &.active {
+              background: #1976d2;
+              color: white;
+              border-color: #1976d2;
+            }
+          }
+        }
+
+        .link {
+          text-decoration: none;
+          color: green;
+          font-size: 16px;
+          font-weight: 400;
+          border: 1px solid green;
+          padding: 5px;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+      }
+
+      .cellAction {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+        z-index: 2;
+
+        .viewButton {
+          padding: 5px 7px;
+          border-radius: 5px;
+          color: white;
+          background-color: #2a5e98;
+          cursor: pointer;
+          transition: background-color 0.3s;
+          border: none;
+          text-align: center;
+          position: relative;
+          z-index: 3;
+
+          &:hover {
+            background-color: #24497a;
+          }
+        }
+
+        .statusSelect {
+          padding: 5px;
+          border-radius: 5px;
+          border: 1px solid #ccc;
+          background: white;
+          cursor: pointer;
+          font-size: 14px;
+          min-width: 120px;
+          transition: border-color 0.3s;
+          position: relative;
+          z-index: 3;
+
+          &:hover {
+            border-color: #2a5e98;
+          }
+
+          &:focus {
+            outline: none;
+            border-color: #2a5e98;
+          }
+
+          option {
+            padding: 5px;
+          }
+        }
+      }
+
+      .cellWithStatus {
         padding: 5px;
         border-radius: 5px;
-        cursor: pointer;
-  
-        &:hover {
-          background-color: #2a5e98;
-          color: white;
+        
+        &.real {
+          background-color: rgba(0, 128, 0, 0.05);
+          color: green;
         }
-      }
-    }
-  
-    .cellWithImg {
-      display: flex;
-      align-items: center;
-  
-      .cellImg {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin-right: 20px;
-      }
-    }
-  
-    .cellWithStatus {
-      padding: 5px;
-      border-radius: 5px;
-  
-      &.active {
-        background-color: rgba(0, 128, 0, 0.05);
-        color: green;
-      }
-  
-      &.pending {
-        background-color: rgba(255, 217, 0, 0.05);
-        color: goldenrod;
-      }
-  
-      &.resolved {
-        background-color: rgba(0, 0, 255, 0.05);
-        color: blue;
-      }
-  
-      &.unresolved {
-        background-color: rgba(255, 0, 0, 0.05);
-        color: crimson;
-      }
-    }
-  
-    .cellAction {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-  
-      .viewButton {
-        padding: 5px 7px;
-        border-radius: 5px;
-        color: white;
-        background-color: #2a5e98;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        border: none;
-  
-        &:hover {
-          background-color: #24497a;
-        }
-      }
-  
-      .deleteButton {
-        padding: 5px 7px;
-        border-radius: 5px;
-        color: crimson;
-        background-color: rgba(220, 20, 60, 0.1);
-        cursor: pointer;
-        transition: background-color 0.3s;
-        border: none;
-  
-        &:hover {
-          background-color: rgba(220, 20, 60, 0.2);
+        
+        &.fake {
+          background-color: rgba(255, 0, 0, 0.05);
+          color: crimson;
         }
       }
     }
   }
-  
+}
+
+// Add this to prevent text selection when clicking
+.MuiDataGrid-root {
+  .MuiDataGrid-cell {
+    user-select: none;
+  }
+}

@@ -16,12 +16,12 @@ import Posts from "./pages/posting/Posts";
 import PostDetail from "./pages/postdetail/PostDetail";
 import CreatePost from "./pages/createpost/CreatePost";
 import EditPost from "./pages/editpost/EditPost";
-import Reporting from "./pages/reporting/Reporting";
-import FakeReports from "./pages/fakereports/FakeReports";
-import RealReports from "./pages/realreports/RealReports";
+import DatatableReport from "./components/datatablereport/DatatableReport";
+// import FakeReports from "./pages/fakereports/FakeReports";
+// import RealReports from "./pages/realreports/RealReports";
 
 // Form Inputs
-import { productInputs, userInputs } from "./formSource";
+import { productInputs, userInputs, reportInputs } from "./formSource";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
@@ -159,30 +159,32 @@ function App() {
           />
 
           {/* Reporting Management */}
-          <Route
-            path="reports"
-            element={
-              <RequireAuth>
-                <Reporting />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="reports/fake"
-            element={
-              <RequireAuth>
-                <FakeReports />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="reports/real"
-            element={
-              <RequireAuth>
-                <RealReports />
-              </RequireAuth>
-            }
-          />
+          <Route path="reports">
+            <Route
+              index
+              element={
+                <RequireAuth>
+                  <DatatableReport />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path=":reportId"
+              element={
+                <RequireAuth>
+                  <Single />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="new"
+              element={
+                <RequireAuth>
+                  <New inputs={reportInputs} title="Add New Report" />
+                </RequireAuth>
+              }
+            />
+          </Route>
         </Routes>
       </BrowserRouter>
     </div>
