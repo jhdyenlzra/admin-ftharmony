@@ -158,7 +158,7 @@ function App() {
             }
           />
 
-          {/* Reporting */}
+          {/* Reporting Management */}
           <Route
             path="reports"
             element={
