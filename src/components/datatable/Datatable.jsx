@@ -13,9 +13,28 @@ const Datatable = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const { data: users, error } = await supabase.from('users').select('*');
+      const { data: users, error } = await supabase
+        .from('users')
+        .select('*');
+      
       if (error) throw error;
-      setData(users.map(user => ({ id: user.user_id, ...user })));
+      
+      // Transform the data to match the expected format
+      const transformedData = users.map(user => ({
+        id: user.id,
+        user: {
+          img: user.avatar_url || "../../assets/avatar.jpg",
+          username: user.full_name
+        },
+        full_name: user.full_name,
+        email: user.email,
+        status: user.last_sign_in_at ? 
+          (new Date() - new Date(user.last_sign_in_at) < 300000 ? 'active' : 'inactive') 
+          : 'pending',
+        role: user.role || 'User',
+      }));
+      
+      setData(transformedData);
     } catch (err) {
       console.error('Error fetching data:', err);
     } finally {
@@ -23,67 +42,82 @@ const Datatable = () => {
     }
   };
 
+  // Set up real-time subscription
   useEffect(() => {
     fetchUsers();
+
+    // Subscribe to real-time changes
+    const subscription = supabase
+      .channel('users_channel')
+      .on('postgres_changes', 
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'users' 
+        }, 
+        payload => {
+          fetchUsers(); // Refresh the data when changes occur
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscription
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
+
+  const actionColumn = [{
+    field: "action",
+    headerName: "Action",
+    width: 200,
+    renderCell: (params) => {
+      return (
+        <div className="cellAction">
+          <Link to={`/users/${params.row.id}`} style={{ textDecoration: "none" }}>
+            <div className="viewButton">View</div>
+          </Link>
+          <div
+            className="deleteButton"
+            onClick={() => handleDelete(params.row.id)}
+          >
+            Delete
+          </div>
+        </div>
+      );
+    },
+  }];
 
   const handleDelete = async (id) => {
     try {
-      setData(data.filter((item) => item.id !== id));
-      const { error } = await supabase.from('users').delete().eq('user_id', id);
+      const { error } = await supabase
+        .from('users')
+        .delete()
+        .eq('id', id);
+      
       if (error) throw error;
+      
+      setData(data.filter((item) => item.id !== id));
     } catch (err) {
       console.error('Error deleting user:', err);
-      fetchUsers(); // Refresh data on delete error
     }
   };
 
   const handleBulkDelete = async () => {
-    if (selectedRows.length === 0) return;
-    
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete ${selectedRows.length} selected users?`
-    );
-
-    if (!confirmDelete) return;
-
     try {
-      // Delete from Supabase
       const { error } = await supabase
         .from('users')
         .delete()
-        .in('user_id', selectedRows);
-
+        .in('id', selectedRows);
+      
       if (error) throw error;
-
-      // Update local state
-      setData(data.filter(item => !selectedRows.includes(item.id)));
-      setSelectedRows([]); // Clear selection
+      
+      setData(data.filter((item) => !selectedRows.includes(item.id)));
+      setSelectedRows([]);
     } catch (err) {
       console.error('Error deleting users:', err);
-      fetchUsers(); // Refresh data on error
     }
   };
-
-  const actionColumn = [
-    {
-      field: "action",
-      headerName: "Action",
-      width: 200,
-      renderCell: (params) => {
-        return (
-          <div className="cellAction">
-            <Link to={`/users/${params.row.id}`} style={{ textDecoration: "none" }}>
-              <div className="viewButton">View</div>
-            </Link>
-            <div className="deleteButton" onClick={() => handleDelete(params.row.id)}>
-              Delete
-            </div>
-          </div>
-        );
-      },
-    },
-  ];
 
   return (
     <div className="datatable">
@@ -104,7 +138,7 @@ const Datatable = () => {
         </div>
       </div>
       {loading ? (
-        <div>Loading...</div>
+        <div className="loadingState">Loading...</div>
       ) : (
         <DataGrid
           className="datagrid"

@@ -47,14 +47,23 @@
     .cellWithImg {
         display: flex;
         align-items: center;
+        gap: 10px;
 
         .cellImg {
             width: 32px;
             height: 32px;
             border-radius: 50%;
             object-fit: cover;
-            margin-right: 20px;
         }
+    }
+
+    .loadingState {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+        font-size: 16px;
+        color: #666;
     }
 
     .cellWithStatus {
@@ -71,7 +80,7 @@
             color: goldenrod;
         }
 
-        &.passive {
+        &.inactive {
             background-color: rgba(255, 0, 0, 0.05);
             color: crimson;
         }
