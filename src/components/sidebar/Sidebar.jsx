@@ -77,16 +77,19 @@ const Sidebar = () => {
             <NotificationsIcon className="icon" />
             <span>Notifications</span>
           </li>
+          <Link to="/analytics" style={{ textDecoration: "none"}}>
           <li>
             <AnalyticsIcon className="icon" />
             <span>Analytics</span>
           </li>
+          </Link>
           <Link to="/posts" style={{ textDecoration: "none" }}>
             <li>
               <ArticleIcon className="icon" />
               <span>Articles</span>
             </li>
           </Link>
+
           <p className="title">USER</p>
           <Link to="/profile" style={{ textDecoration: "none" }}>
             <li>

@@ -17,10 +17,10 @@ import PostDetail from "./pages/postdetail/PostDetail";
 import CreatePost from "./pages/createpost/CreatePost";
 import EditPost from "./pages/editpost/EditPost";
 import DatatableReport from "./components/datatablereport/DatatableReport";
+import Analytics from "./pages/analytics/Analytics";
 // import FakeReports from "./pages/fakereports/FakeReports";
 // import RealReports from "./pages/realreports/RealReports";
 
-// Form Inputs
 import { productInputs, userInputs, reportInputs } from "./formSource";
 
 function App() {
@@ -120,6 +120,15 @@ function App() {
             element={
               <RequireAuth>
                 <Profile />
+              </RequireAuth>
+            }
+          />
+          {/* Analytics */ }
+          <Route
+            path="/analytics"
+            element={
+              <RequireAuth>
+                <Analytics />
               </RequireAuth>
             }
           />
