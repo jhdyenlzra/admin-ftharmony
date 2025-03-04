@@ -1,34 +1,26 @@
 .table {
+    .MuiTableContainer-root {
+      margin: 20px;
+      border-radius: 12px;
+    }
+  
     .cellWrapper {
-        display: flex;
-        align-items: center;
-
-        .image {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            margin-right: 10px;
-            object-fit: cover;
-        }
+      display: flex;
+      align-items: center;
+  
+      .image {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        margin-right: 10px;
+        object-fit: cover;
+      }
     }
-
-    .status {
-        padding: 5px;
-        border-radius: 5px;
-
-        &.in-review {
-            color: blue;
-            background-color: rgba(0, 0, 255, 0.1); // Light blue background for "In Review"
-        }
-
-        &.closed {
-            color: green;
-            background-color: rgba(0, 128, 0, 0.151); // Light green background for "Closed"
-        }
-
-        &.pending {
-            color: red;
-            background-color: rgba(255, 0, 0, 0.1); // Light red background for "Pending"
-        }
+  
+    .tableCell {
+      font-size: 14px;
+      font-weight: 500;
+      color: #555; // Gray text color
     }
-}
+  }
+  

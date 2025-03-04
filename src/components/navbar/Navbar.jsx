@@ -9,73 +9,70 @@ import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext, useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
+import DefaultAvatar from "../../assets/avatar.jpg";
 
 const Navbar = ({ avatarUpdated }) => {
   const { dispatch } = useContext(DarkModeContext);
-  const [avatar, setAvatar] = useState(null);
+  const [avatar, setAvatar] = useState(DefaultAvatar);
   const [user, setUser] = useState(null);
 
+  // Function to create a default profile if none exists
   const createDefaultProfile = async (userId, email) => {
     try {
       const { error } = await supabase.from("users").insert([
         {
           id: userId,
           email: email,
-          full_name: "New User", // Default name
+          full_name: "New User",
           avatar_url: null,
           created_at: new Date(),
         },
       ]);
-
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       console.log("Default profile created successfully.");
     } catch (err) {
-      console.error("Error creating default profile:", err);
+      console.error("Error creating default profile:", err.message);
     }
   };
 
+  // Fetch user profile and avatar
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const { data: session } = await supabase.auth.getSession();
-        if (!session?.session?.user) {
-          console.error("User not authenticated.");
+        const currentUser = session?.session?.user;
+
+        if (!currentUser) {
+          console.warn("User not authenticated.");
           return;
         }
 
-        const userId = session.session.user.id;
-        setUser(session.session.user);
+        setUser(currentUser);
 
         const { data: profile, error } = await supabase
           .from("users")
-          .select("full_name, avatar_url")
-          .eq("id", userId)
+          .select("avatar_url")
+          .eq("id", currentUser.id)
           .single();
 
         if (error && error.code === "PGRST116") {
-          console.warn("No profile found for the user. Creating default profile...");
-          await createDefaultProfile(userId, session.session.user.email);
+          console.warn("No profile found. Creating default profile...");
+          await createDefaultProfile(currentUser.id, currentUser.email);
           return;
         }
+        if (error) throw error;
 
-        if (error) {
-          throw error;
-        }
-
-        if (profile) {
-          setAvatar(profile.avatar_url || "../../assets/avatar.jpg"); // Default avatar
-        }
-      } catch (error) {
-        console.error("Error fetching user profile:", error);
+        setAvatar(profile?.avatar_url || DefaultAvatar);
+      } catch (err) {
+        console.error("Error fetching user profile:", err.message);
       }
     };
 
     fetchUserProfile();
-  }, [avatarUpdated]); // Re-fetch when avatarUpdated changes
+  }, [avatarUpdated]);
 
+  // Handle language switching
   const handleLanguageChange = (lang) => {
     alert(`Language switched to ${lang}`);
   };
@@ -83,40 +80,64 @@ const Navbar = ({ avatarUpdated }) => {
   return (
     <div className="navbar">
       <div className="wrapper">
+        {/* Search Bar */}
         <div className="search">
           <input type="text" placeholder="Find..." />
           <SearchIcon />
         </div>
+
+        {/* Navbar Items */}
         <div className="items">
-          <div className="item" onClick={() => handleLanguageChange("English")}>
+          {/* Language Options */}
+          <div
+            className="item"
+            onClick={() => handleLanguageChange("English")}
+            title="Switch to English"
+          >
             <LanguageOutlinedIcon className="icon" />
             English
           </div>
-          <div className="item" onClick={() => handleLanguageChange("Tagalog")}>
+          <div
+            className="item"
+            onClick={() => handleLanguageChange("Tagalog")}
+            title="Switch to Tagalog"
+          >
             <LanguageOutlinedIcon className="icon" />
             Tagalog
           </div>
-          <div className="item">
-            <DarkModeOutlinedIcon
-              className="icon"
-              onClick={() => dispatch({ type: "TOGGLE" })}
-            />
+
+          {/* Dark Mode Toggle */}
+          <div
+            className="item"
+            onClick={() => dispatch({ type: "TOGGLE" })}
+            title="Toggle Dark Mode"
+          >
+            <DarkModeOutlinedIcon className="icon" />
           </div>
-          <div className="item">
+
+          {/* Fullscreen Toggle */}
+          <div className="item" title="Exit Fullscreen">
             <FullscreenExitOutlinedIcon className="icon" />
           </div>
-          <div className="item">
+
+          {/* Notifications */}
+          <div className="item" title="Notifications">
             <NotificationsNoneOutlinedIcon className="icon" />
             <div className="counter">1</div>
           </div>
-          <div className="item">
+
+          {/* List View */}
+          <div className="item" title="Menu">
             <ListOutlinedIcon className="icon" />
           </div>
-          <Link to="/profile" className="item">
+
+          {/* User Avatar */}
+          <Link to="/profile" className="item" title="View Profile">
             <img
-              src={avatar || "../../assets/avatar.jpg"} // Default to a placeholder avatar if none exists
-              alt={`${user?.email || "Profile"} Logo`}
+              src={avatar}
+              alt={`${user?.email || "User"}'s Avatar`}
               className="avatar"
+              onError={(e) => (e.target.src = DefaultAvatar)} // Fallback for broken images
             />
           </Link>
         </div>

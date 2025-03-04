@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import "./chart.scss";
 import {
   AreaChart,
@@ -7,23 +8,63 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { supabase } from "../../supabaseClient"; // Adjust the path based on your project structure
 
-const data = [
-  { name: "Jan", Total: 1200 },
-  { name: "Feb", Total: 2100 },
-  { name: "Mar", Total: 800 },
-  { name: "Apr", Total: 1600 },
-  { name: "May", Total: 900 },
-  { name: "Jun", Total: 1700 },
-  { name: "Jul", Total: 1200 },
-  { name: "Aug", Total: 2100 },
-  { name: "Sept", Total: 800 },
-  { name: "Oct", Total: 1600 },
-  { name: "Nov", Total: 900 },
-  { name: "Dec", Total: 1700 },
-];
+const Chart = ({ aspect, title }) => {
+  const [data, setData] = useState([]);
 
-const Chart = ({aspect, title }) => {
+  // Function to fetch reports data from Supabase
+  const fetchReportsData = async () => {
+    try {
+      const { data: reports, error } = await supabase
+        .from("reports") // Replace with your Supabase reports table name
+        .select("created_at");
+
+      if (error) throw error;
+
+      // Process data to group by month
+      const monthlyData = Array(12).fill(0); // Initialize an array for each month
+
+      reports.forEach((report) => {
+        const month = new Date(report.created_at).getMonth(); // Get the month index (0-11)
+        monthlyData[month] += 1; // Increment the count for the respective month
+      });
+
+      // Format data for the chart
+      const formattedData = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+        "Jul", "Aug", "Sept", "Oct", "Nov", "Dec",
+      ].map((month, index) => ({
+        name: month,
+        Total: monthlyData[index],
+      }));
+
+      setData(formattedData);
+    } catch (error) {
+      console.error("Error fetching reports data:", error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchReportsData();
+
+    // Set up real-time subscription for updates
+    const subscription = supabase
+      .channel("reports-channel")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "reports" },
+        () => {
+          fetchReportsData(); // Re-fetch data on new report
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription); // Clean up subscription
+    };
+  }, []);
+
   return (
     <div className="chart">
       <div className="title">{title}</div>

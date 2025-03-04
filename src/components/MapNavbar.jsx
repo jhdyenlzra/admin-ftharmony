@@ -1,47 +1,40 @@
 import React from "react";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import { styled } from "@mui/material/styles";
-import MuiAppBar from "@mui/material/AppBar";
-import MenuIcon from "@mui/icons-material/Menu";
+import { AppBar, Toolbar, IconButton, Typography } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useNavigate } from "react-router-dom";
 
-export default function MapNavbar({ handleDrawerOpen, open }) {
-  const drawerWidth = 250;
+const MapNavbar = ({ open }) => {
+  const navigate = useNavigate();
 
-  const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== "open",
-  })(({ theme, open }) => ({
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    ...(open && {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: `${drawerWidth}px`,
-      transition: theme.transitions.create("margin", {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-    }),
-  }));
+  const handleBackClick = () => {
+    navigate("/home"); // Adjust the path to match your home route
+  };
 
   return (
-    <AppBar position="fixed" open={open} sx={{ p: 0 }}>
+    <AppBar
+      position="fixed"
+      sx={{
+        zIndex: (theme) => theme.zIndex.drawer + 1,
+        transition: open ? "margin 0.3s ease-out" : "margin 0.3s ease-in",
+        marginLeft: open ? "240px" : "0",
+      }}
+    >
       <Toolbar>
         <IconButton
           edge="start"
           color="inherit"
-          aria-label="open drawer"
-          onClick={handleDrawerOpen}
-          sx={{ mr: 2, ...(open && { display: "none" }) }}
+          aria-label="back"
+          onClick={handleBackClick}
+          sx={{ marginRight: 2 }}
         >
-          <MenuIcon />
+          <ArrowBackIcon />
         </IconButton>
-        <Typography variant="h6" color="inherit" component="div">
-          This is my map App
+        <Typography variant="h6" noWrap>
+          Map View
         </Typography>
       </Toolbar>
     </AppBar>
   );
-}
+};
+
+export default MapNavbar;

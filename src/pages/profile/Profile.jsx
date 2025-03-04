@@ -24,6 +24,7 @@ const Profile = ({ onAvatarUpdate }) => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
+  // Fetch profile on component mount
   useEffect(() => {
     fetchProfile();
   }, []);
@@ -67,14 +68,14 @@ const Profile = ({ onAvatarUpdate }) => {
   };
 
   const uploadAvatar = async (file) => {
-    const fileName = `${Date.now()}_${file.name}`;
+    const fileName = `avatars/${Date.now()}_${file.name}`;
     const { data, error } = await supabase.storage
       .from("avatars")
       .upload(fileName, file);
 
     if (error) throw new Error("Failed to upload avatar.");
 
-    const { publicUrl } = supabase.storage.from("avatars").getPublicUrl(data.path);
+    const { publicUrl } = supabase.storage.from("avatars").getPublicUrl(fileName);
     return publicUrl;
   };
 
@@ -89,7 +90,7 @@ const Profile = ({ onAvatarUpdate }) => {
 
     try {
       const { error } = await supabase.auth.updateUser({
-        password: passwords.newPassword
+        password: passwords.newPassword,
       });
 
       if (error) throw error;
@@ -114,7 +115,7 @@ const Profile = ({ onAvatarUpdate }) => {
       const { data: session } = await supabase.auth.getSession();
       if (!session?.session?.user) {
         setError("User not authenticated.");
-        return;
+        return; 
       }
 
       const { id } = session.session.user;
@@ -140,6 +141,7 @@ const Profile = ({ onAvatarUpdate }) => {
       setNewAvatarFile(null);
       setIsEditingAvatar(false);
       setSuccess("Profile updated successfully!");
+
       if (onAvatarUpdate) onAvatarUpdate(avatarUrl);
     } catch (err) {
       setError(err.message || "Failed to update profile.");

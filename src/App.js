@@ -29,6 +29,7 @@ function App() {
 
   // Protect routes with authentication
   const RequireAuth = ({ children }) => {
+    const {currentUser } = useContext(AuthContext);
     return currentUser ? children : <Navigate to="/login" />;
   };
 
@@ -81,34 +82,6 @@ function App() {
               element={
                 <RequireAuth>
                   <New inputs={userInputs} title="Add New User" />
-                </RequireAuth>
-              }
-            />
-          </Route>
-
-          {/* Product Management */}
-          <Route path="products">
-            <Route
-              index
-              element={
-                <RequireAuth>
-                  <List />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path=":productId"
-              element={
-                <RequireAuth>
-                  <Single />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="new"
-              element={
-                <RequireAuth>
-                  <New inputs={productInputs} title="Add New Product" />
                 </RequireAuth>
               }
             />

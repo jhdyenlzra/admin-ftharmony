@@ -5,67 +5,74 @@
     align-items: center;
     font-size: 14px;
     color: #555;
-
+  
     .wrapper {
-        width: 100%;
-        padding: 20px;
+      width: 100%;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+  
+      .search {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-
-        .search {
+        border: 0.5px solid lightgray;
+        padding: 5px;
+        border-radius: 5px;
+  
+        input {
+          border: none;
+          outline: none;
+          background: transparent;
+          font-size: 14px;
+  
+          &::placeholder {
+            font-size: 12px;
+          }
+        }
+      }
+  
+      .items {
+        display: flex;
+        align-items: center;
+  
+        .item {
+          display: flex;
+          align-items: center;
+          margin-right: 20px;
+          position: relative;
+          cursor: pointer;
+  
+          .icon {
+            font-size: 20px;
+            color: #555;
+          }
+  
+          .avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #ddd;
+          }
+  
+          .counter {
+            width: 15px;
+            height: 15px;
+            background-color: red;
+            border-radius: 50%;
+            color: white;
             display: flex;
             align-items: center;
-            border: 0.5px solid lightgray;
-            padding: 3px;
-
-            input {
-                border: none;
-                outline: none;
-                background: transparent;
-
-                &::placeholder {
-                    font-size: 12px;
-                }
-            }
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+          }
         }
-
-        .items {
-            display: flex;
-            align-items: center;
-
-            .item {
-                display: flex;
-                align-items: center;
-                margin-right: 20px;
-                position: relative;
-
-                .icon {
-                    font-size: 20px;
-                }
-
-                .avatar {
-                    width: 30px;
-                    height: 30px;
-                    border-radius: 50%;
-                }
-
-                .counter {
-                    width: 15px;
-                    height: 15px;
-                    background-color: red;
-                    border-radius: 50%;
-                    color: white;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 10px;
-                    font-weight: bold;
-                    position: absolute;
-                    top: -5px;
-                    right: -5px;
-                }
-            }
-        }
+      }
     }
-}
+  }
+  
