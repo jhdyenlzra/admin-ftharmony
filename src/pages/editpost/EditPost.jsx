@@ -37,7 +37,7 @@ const EditPost = () => {
       if (error) throw error;
 
       alert("Post updated successfully!");
-      navigate("/articles");
+      navigate("/posts");
     } catch (err) {
       console.error("Error updating post:", err);
       alert("Failed to update post. Please try again.");

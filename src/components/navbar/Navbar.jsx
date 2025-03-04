@@ -2,17 +2,14 @@ import { Link } from "react-router-dom";
 import "./navbar.scss";
 import SearchIcon from "@mui/icons-material/Search";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import FullscreenExitOutlinedIcon from "@mui/icons-material/FullscreenExitOutlined";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
-import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext, useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
 import DefaultAvatar from "../../assets/avatar.jpg";
 
 const Navbar = ({ avatarUpdated }) => {
-  const { dispatch } = useContext(DarkModeContext);
   const [avatar, setAvatar] = useState(DefaultAvatar);
   const [user, setUser] = useState(null);
 
@@ -88,32 +85,6 @@ const Navbar = ({ avatarUpdated }) => {
 
         {/* Navbar Items */}
         <div className="items">
-          {/* Language Options */}
-          <div
-            className="item"
-            onClick={() => handleLanguageChange("English")}
-            title="Switch to English"
-          >
-            <LanguageOutlinedIcon className="icon" />
-            English
-          </div>
-          <div
-            className="item"
-            onClick={() => handleLanguageChange("Tagalog")}
-            title="Switch to Tagalog"
-          >
-            <LanguageOutlinedIcon className="icon" />
-            Tagalog
-          </div>
-
-          {/* Dark Mode Toggle */}
-          <div
-            className="item"
-            onClick={() => dispatch({ type: "TOGGLE" })}
-            title="Toggle Dark Mode"
-          >
-            <DarkModeOutlinedIcon className="icon" />
-          </div>
 
           {/* Fullscreen Toggle */}
           <div className="item" title="Exit Fullscreen">
