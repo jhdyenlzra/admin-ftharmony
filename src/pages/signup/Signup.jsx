@@ -23,27 +23,9 @@ const Signup = () => {
     setError(null);
     setVerificationSent(false);
 
-    // Check if email is Gmail
-    if (!validateEmail(email)) {
-      setError("Please use a valid email account");
-      return;
-    }
-
-    // Check password match
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    // Check password length
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long");
-      return;
-    }
-
     try {
-      // Sign up with Supabase
-      const { data: { user }, error: signUpError } = await supabase.auth.signUp({
+      // First, check if the email exists in auth
+      const { data: authUser } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -54,35 +36,44 @@ const Signup = () => {
         },
       });
 
-      if (signUpError) throw signUpError;
+      console.log('Auth signup response:', authUser); // Debug log
 
-      if (user) {
-        // Add user to users table
-        const { error: profileError } = await supabase
-          .from('users')
-          .insert([
-            {
-              id: user.id,
-              email: email,
-              full_name: fullName,
-            }
-          ]);
-
-        if (profileError) throw profileError;
-
-        setVerificationSent(true);
-        // Clear form
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
-        setFullName("");
+      if (!authUser?.user?.id) {
+        throw new Error('Failed to create auth user');
       }
 
+      // Insert into users table
+      const { error: profileError } = await supabase
+        .from('users')
+        .insert([
+          {
+            id: authUser.user.id,
+            email: email,
+            full_name: fullName,
+          }
+        ]);
+
+      if (profileError) {
+        console.error('Profile creation error:', profileError);
+        throw profileError;
+      }
+
+      setVerificationSent(true);
+      // Clear form
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      setFullName("");
+
     } catch (error) {
-      if (error.message.includes("email")) {
+      console.error('Detailed error:', error); // Debug log
+      
+      if (error.message?.includes("User already registered")) {
         setError("This email is already registered. Please use a different email or try logging in.");
-      } else {
+      } else if (error.message?.includes("Password")) {
         setError(error.message);
+      } else {
+        setError(`Signup failed: ${error.message}`); // More specific error message
       }
     }
   };
