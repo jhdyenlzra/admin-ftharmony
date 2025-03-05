@@ -15,6 +15,7 @@
     "@testing-library/user-event": "^13.5.0",
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
+    "date-fns": "^4.1.0",
     "dompurify": "^3.2.4",
     "http-browserify": "^1.7.0",
     "https-browserify": "^1.0.0",

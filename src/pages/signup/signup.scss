@@ -66,11 +66,47 @@
                 }
             }
 
-            .error-message {
-                margin-top: 1rem;
-                color: #d9534f;
-                font-size: 0.9rem;
+            .verification-message {
                 text-align: center;
+                padding: 20px;
+                margin: 20px 0;
+                background-color: #e8f5e9;
+                border-radius: 8px;
+                
+                h2 {
+                    color: #2e7d32;
+                    margin-bottom: 15px;
+                }
+                
+                p {
+                    color: #1b5e20;
+                    margin-bottom: 10px;
+                    font-size: 0.9rem;
+                }
+                
+                .login-button {
+                    margin-top: 20px;
+                    padding: 10px 20px;
+                    background-color: #2a5e98;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    
+                    &:hover {
+                        background-color: #21497d;
+                    }
+                }
+            }
+
+            .error-message {
+                color: #ff4444;
+                background-color: rgba(255, 68, 68, 0.1);
+                padding: 10px;
+                border-radius: 4px;
+                margin: 10px 0;
+                text-align: center;
+                font-size: 14px;
             }
 
             .success-message {
@@ -91,8 +127,12 @@
             }
         }
 
+        .signup-button {
+            margin-top: 10px;
+        }
+
         .google-signup {
-            margin-top: 1rem;
+            margin-top: 15px;
             padding: 10px;
             background-color: #db4437;
             color: #fff;

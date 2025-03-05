@@ -24,6 +24,19 @@ const Profile = ({ onAvatarUpdate }) => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
+  // Add new function to handle key press
+  const handleKeyPress = async (e, formType) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Prevent default form submission
+      
+      if (formType === 'profile') {
+        await handleFormSubmit(e);
+      } else if (formType === 'password') {
+        await handlePasswordChange();
+      }
+    }
+  };
+
   // Fetch profile on component mount
   useEffect(() => {
     fetchProfile();
@@ -68,15 +81,27 @@ const Profile = ({ onAvatarUpdate }) => {
   };
 
   const uploadAvatar = async (file) => {
-    const fileName = `avatars/${Date.now()}_${file.name}`;
-    const { data, error } = await supabase.storage
-      .from("avatars")
-      .upload(fileName, file);
+    try {
+      // Generate unique filename
+      const fileName = `avatars/${Date.now()}_${file.name}`;
+      
+      // Upload file to storage
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(fileName, file);
 
-    if (error) throw new Error("Failed to upload avatar.");
+      if (uploadError) throw uploadError;
 
-    const { publicUrl } = supabase.storage.from("avatars").getPublicUrl(fileName);
-    return publicUrl;
+      // Get the public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(fileName);
+
+      return publicUrl;
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      throw new Error("Failed to upload avatar.");
+    }
   };
 
   const handlePasswordChange = async () => {
@@ -115,34 +140,38 @@ const Profile = ({ onAvatarUpdate }) => {
       const { data: session } = await supabase.auth.getSession();
       if (!session?.session?.user) {
         setError("User not authenticated.");
-        return; 
+        return;
       }
 
       const { id } = session.session.user;
       let avatarUrl = profile.avatarUrl;
 
+      // Upload new avatar if file selected
       if (newAvatarFile) {
         avatarUrl = await uploadAvatar(newAvatarFile);
       }
 
-      const updates = {
-        full_name: profile.fullName,
-        avatar_url: avatarUrl,
-      };
-
+      // Update user profile in the users table
       const { error: updateError } = await supabase
         .from("users")
-        .update(updates)
+        .update({
+          full_name: profile.fullName,
+          avatar_url: avatarUrl
+        })
         .eq("id", id);
 
       if (updateError) throw updateError;
 
-      setProfile((prev) => ({ ...prev, avatarUrl }));
+      // Update local state
+      setProfile(prev => ({ ...prev, avatarUrl }));
       setNewAvatarFile(null);
       setIsEditingAvatar(false);
       setSuccess("Profile updated successfully!");
 
-      if (onAvatarUpdate) onAvatarUpdate(avatarUrl);
+      // Notify parent component about avatar update
+      if (onAvatarUpdate) {
+        onAvatarUpdate(avatarUrl);
+      }
     } catch (err) {
       setError(err.message || "Failed to update profile.");
     }
@@ -197,6 +226,7 @@ const Profile = ({ onAvatarUpdate }) => {
                     type="text"
                     value={profile.fullName}
                     onChange={(e) => setProfile({ ...profile, fullName: e.target.value })}
+                    onKeyPress={(e) => handleKeyPress(e, 'profile')}
                     required
                   />
                 </div>
@@ -219,6 +249,7 @@ const Profile = ({ onAvatarUpdate }) => {
                     type="password"
                     value={passwords.currentPassword}
                     onChange={(e) => setPasswords({ ...passwords, currentPassword: e.target.value })}
+                    onKeyPress={(e) => handleKeyPress(e, 'password')}
                   />
                 </div>
 
@@ -228,6 +259,7 @@ const Profile = ({ onAvatarUpdate }) => {
                     type="password"
                     value={passwords.newPassword}
                     onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
+                    onKeyPress={(e) => handleKeyPress(e, 'password')}
                   />
                 </div>
 
@@ -237,6 +269,7 @@ const Profile = ({ onAvatarUpdate }) => {
                     type="password"
                     value={passwords.confirmPassword}
                     onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })}
+                    onKeyPress={(e) => handleKeyPress(e, 'password')}
                   />
                 </div>
 

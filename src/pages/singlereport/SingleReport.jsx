@@ -1,11 +1,12 @@
-import "./single.scss";
+import React from "react";
+import "./singlereport.scss";
 import yen from "../../assets/yen.png";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import Chart from "../../components/chart/Chart";
 import List from "../../components/table/Table";
 
-const Single = () => {
+const SingleReport = () => {
   return (
     <div className="single">
       <Sidebar />
@@ -16,7 +17,7 @@ const Single = () => {
             <div className="editButton">Edit</div>
             <h1 className="title">Information</h1>
             <div className="item">
-               <img
+              <img
                 src={yen}
                 alt="User profile"
                 className="itemImg"
@@ -32,12 +33,6 @@ const Single = () => {
                   <span className="itemValue">+63 945 100 8823</span>
                 </div>
                 <div className="detailItem">
-                  <span className="itemKey">Address:</span>
-                  <span className="itemValue">
-                    West Tapinac, Olongapo City
-                  </span>
-                </div>
-                <div className="detailItem">
                   <span className="itemKey">Country:</span>
                   <span className="itemValue">Philippines</span>
                 </div>
@@ -49,12 +44,12 @@ const Single = () => {
           </div>
         </div>
         <div className="bottom">
-        <h1 className="title">Last Reports</h1>
-          <List/>
+          <h1 className="title">Last Reports</h1>
+          <List />
         </div>
       </div>
     </div>
   );
 };
 
-export default Single;
+export default SingleReport;

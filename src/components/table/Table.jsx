@@ -22,8 +22,8 @@ const TableList = () => {
     const fetchReports = async () => {
       const { data, error } = await supabase
         .from("reports")
-        .select("id, reporter, relationship, reported_person, date")
-        .order("date", { ascending: false })
+        .select("id, reporter_name, relationship_with_abuser, abuser_name, created_at")
+        .order("created_at", { ascending: false })
         .limit(3);
   
       if (error) {
@@ -67,12 +67,12 @@ const TableList = () => {
               <TableCell className="tableCell">{row.id}</TableCell>
               <TableCell className="tableCell">
                 <div className="cellWrapper">
-                  <span className="reporter">{row.reporter}</span>
+                  <span className="reporter">{row.reporter_name}</span>
                 </div>
               </TableCell>
-              <TableCell className="tableCell">{row.relationship}</TableCell>
-              <TableCell className="tableCell">{row.reported_person}</TableCell>
-              <TableCell className="tableCell">{row.date}</TableCell>
+              <TableCell className="tableCell">{row.relationship_with_abuser}</TableCell>
+              <TableCell className="tableCell">{row.abuser_name}</TableCell>
+              <TableCell className="tableCell">{row.created_at}</TableCell>
             </TableRow>
           ))}
         </TableBody>

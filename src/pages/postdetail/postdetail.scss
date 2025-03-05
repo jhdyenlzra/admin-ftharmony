@@ -13,62 +13,81 @@
         padding: 20px;
     }
 
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background-color: #2a5e98;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+        margin-top: 30px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        svg {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        &:hover {
+            background-color: #234b7a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+            svg {
+                transform: translateX(-4px);
+            }
+        }
+
+        &:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    }
+
     &__header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 20px;
-
-        .post-detail__actions {
-            display: flex;
-            gap: 10px;
-
-            .btn {
-                padding: 10px 20px;
-                border: none;
-                border-radius: 5px;
-                font-size: 14px;
-                cursor: pointer;
-
-                &.btn-primary {
-                    background-color: #2a5e98;
-                    color: #fff;
-
-                    &:hover {
-                        background-color: #21497d;
-                    }
-                }
-            }
-        }
     }
 
     &__title {
-        font-size: 24px;
-        font-weight: bold;
+        font-size: 2rem;
+        margin-bottom: 20px;
         color: #333;
-        margin-bottom: 15px;
     }
 
     &__thumbnail {
-        margin: 20px 0;
-
+        margin-bottom: 20px;
+        
         img {
             width: 100%;
-            border-radius: 5px;
+            height: auto;
+            border-radius: 8px;
             object-fit: cover;
         }
     }
 
     &__content {
-        font-size: 16px;
         line-height: 1.6;
-        color: #555;
+        color: #444;
     }
 
-    &__loading,
     &__error {
-        font-size: 18px;
         text-align: center;
-        color: #555;
+        color: #ff4444;
+        padding: 20px;
+    }
+
+    &__loading {
+        text-align: center;
+        color: #666;
+        padding: 20px;
     }
 }

@@ -2,8 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./postitem.scss";
 import { PostItemDescription } from "../../helpers/QuillTruncate";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
-const PostItem = ({ postID, thumbnail, category, title, description }) => (
+const PostItem = ({ postID, thumbnail, category, title, description, onDelete }) => (
   <article className="postItem">
     <div className="postItemThumbnail">
       {thumbnail ? (
@@ -17,9 +18,18 @@ const PostItem = ({ postID, thumbnail, category, title, description }) => (
       )}
     </div>
     <div className="postItemContent">
-      <Link to={`/postdetail/${postID}`} className="postItemTitle">
-        <h3>{title}</h3>
-      </Link>
+      <div className="postItemHeader">
+        <Link to={`/postdetail/${postID}`} className="postItemTitle">
+          <h3>{title}</h3>
+        </Link>
+        <button 
+          className="deletePostButton"
+          onClick={() => onDelete(postID)}
+          title="Delete post"
+        >
+          <DeleteOutlineIcon />
+        </button>
+      </div>
 
       <PostItemDescription description={description} />
       <div className="postItemFooter">

@@ -1,7 +1,7 @@
 import "./datatablereport.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { reportColumns } from "../../datatablereportsource";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 import Sidebar from "../../components/sidebar/Sidebar";
@@ -12,6 +12,7 @@ const DatatableReport = () => {
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState('all');
   const navigate = useNavigate();
+  const location = useLocation();
 
   const fetchReports = async () => {
     setLoading(true);
@@ -33,8 +34,46 @@ const DatatableReport = () => {
     }
   };
 
+  // Initialize filterType from URL params
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const filterParam = params.get('filter');
+    if (filterParam) {
+      setFilterType(filterParam);
+    }
+  }, [location.search]);
+
+  // Set up real-time subscription
   useEffect(() => {
     fetchReports();
+
+    const channel = supabase
+      .channel('reports_channel')
+      .on('postgres_changes', 
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'reports' 
+        }, 
+        payload => {
+          if (payload.eventType === 'UPDATE') {
+            // Update the specific report in the local state
+            setReports(prevReports => 
+              prevReports.map(report => 
+                report.report_id === payload.new.report_id ? { id: payload.new.report_id, ...payload.new } : report
+              )
+            );
+          } else {
+            // For other changes (INSERT, DELETE), fetch all reports
+            fetchReports();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const handleMarkAs = async (event, id, type) => {
@@ -56,28 +95,19 @@ const DatatableReport = () => {
       // Navigate to the corresponding reports section
       if (type === 'real') {
         setFilterType('real');
-        navigate('/reports?filter=real');
+        navigate('/reports?filter=real', { replace: true });
       } else if (type === 'fake') {
         setFilterType('fake');
-        navigate('/reports?filter=fake');
+        navigate('/reports?filter=fake', { replace: true });
       }
     } catch (err) {
       console.error('Error updating report:', err);
     }
   };
 
-  // Add useEffect to handle URL params for filtering
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const filterParam = urlParams.get('filter');
-    if (filterParam) {
-      setFilterType(filterParam);
-    }
-  }, []);
-
   const handleFilterClick = (type) => {
     setFilterType(type);
-    navigate(`/reports${type !== 'all' ? `?filter=${type}` : ''}`);
+    navigate(`/reports${type !== 'all' ? `?filter=${type}` : ''}`, { replace: true });
   };
 
   const actionColumn = [
@@ -158,18 +188,7 @@ const DatatableReport = () => {
               pageSize={9}
               rowsPerPageOptions={[9]}
               checkboxSelection
-              disableSelectionOnClick={false} // Enable row selection on click
-              onRowClick={(params, event) => {
-                // Only prevent row selection for specific elements
-                if (
-                  event.target.closest('.viewButton') || 
-                  event.target.closest('.statusSelect')
-                ) {
-                  event.stopPropagation();
-                  return;
-                }
-                // Allow normal row click behavior for other areas
-              }}
+              disableSelectionOnClick
             />
           )}
         </div>

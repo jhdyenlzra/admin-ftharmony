@@ -13,6 +13,34 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
+    .postItemHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .deletePostButton {
+        background: none;
+        border: none;
+        color: #ff4444;
+        cursor: pointer;
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        opacity: 0.7;
+
+        &:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        svg {
+            font-size: 20px;
+        }
+    }
+
     .postItemThumbnail {
         width: 120px;
         height: 120px;

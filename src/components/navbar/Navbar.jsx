@@ -13,27 +13,6 @@ const Navbar = ({ avatarUpdated }) => {
   const [avatar, setAvatar] = useState(DefaultAvatar);
   const [user, setUser] = useState(null);
 
-  // Function to create a default profile if none exists
-  const createDefaultProfile = async (userId, email) => {
-    try {
-      const { error } = await supabase.from("users").insert([
-        {
-          id: userId,
-          email: email,
-          full_name: "New User",
-          avatar_url: null,
-          created_at: new Date(),
-        },
-      ]);
-      if (error) throw error;
-
-      console.log("Default profile created successfully.");
-    } catch (err) {
-      console.error("Error creating default profile:", err.message);
-    }
-  };
-
-  // Fetch user profile and avatar
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -53,21 +32,17 @@ const Navbar = ({ avatarUpdated }) => {
           .eq("id", currentUser.id)
           .single();
 
-        if (error && error.code === "PGRST116") {
-          console.warn("No profile found. Creating default profile...");
-          await createDefaultProfile(currentUser.id, currentUser.email);
-          return;
-        }
         if (error) throw error;
 
         setAvatar(profile?.avatar_url || DefaultAvatar);
       } catch (err) {
         console.error("Error fetching user profile:", err.message);
+        setAvatar(DefaultAvatar);
       }
     };
 
     fetchUserProfile();
-  }, [avatarUpdated]);
+  }, [avatarUpdated]); // Add avatarUpdated to dependency array
 
   // Handle language switching
   const handleLanguageChange = (lang) => {

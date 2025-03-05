@@ -35,42 +35,6 @@ const CreatePost = () => {
     ],
   };
 
-  const handleThumbnailUpload = async (file) => {
-    try {
-      const fileName = `public/${Date.now()}`;
-      const { data, error } = await supabase.storage
-        .from("thumbnails") // Ensure the bucket name is correct
-        .upload(fileName, file);
-
-      console.log("Upload response:", data);
-
-      if (error || !data) {
-        console.error("Thumbnail upload error:", error);
-        setError("Failed to upload thumbnail. Please try again.");
-        return null;
-      }
-
-      const filePath = data.path; // Use the returned file path
-      console.log("File path used for public URL:", filePath);
-
-      // Generate the public URL
-      const publicUrl = `${supabase.storageUrl}/object/public/thumbnails/${filePath}`;
-      console.log("Generated public URL:", publicUrl);
-
-      if (!publicUrl) {
-        console.error("Failed to retrieve public URL for thumbnail.");
-        setError("Failed to generate thumbnail URL.");
-        return null;
-      }
-
-      return publicUrl;
-    } catch (err) {
-      console.error("Unexpected error during thumbnail upload:", err);
-      setError("An unexpected error occurred during thumbnail upload.");
-      return null;
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -81,7 +45,6 @@ const CreatePost = () => {
       const { data: user, error: authError } = await supabase.auth.getUser();
 
       if (authError || !user) {
-        console.error("Authentication error:", authError);
         setError("You must be logged in to create a post.");
         setLoading(false);
         return;
@@ -89,14 +52,20 @@ const CreatePost = () => {
 
       let thumbnailURL = null;
       if (thumbnail) {
-        thumbnailURL = await handleThumbnailUpload(thumbnail);
-        if (!thumbnailURL) {
+        const fileName = `public/${Date.now()}`;
+        const { data, error } = await supabase.storage
+          .from("thumbnails")
+          .upload(fileName, thumbnail);
+
+        if (error || !data) {
+          setError("Failed to upload thumbnail. Please try again.");
           setLoading(false);
           return;
         }
+
+        thumbnailURL = `${supabase.storageUrl}/object/public/thumbnails/${data.path}`;
       }
 
-      // Construct the post payload
       const postPayload = {
         title,
         category,
@@ -105,33 +74,21 @@ const CreatePost = () => {
         authorID: user.user.id,
       };
 
-      // Log the post payload
-      console.log("Post payload:", postPayload);
-
-      const { data, error: postError } = await supabase
-        .from("posts")
-        .insert([postPayload])
-        .single();
+      const { error: postError } = await supabase.from("posts").insert([postPayload]).single();
 
       if (postError) {
-        console.error("Post creation error:", postError);
         setError("Failed to create post. Please try again.");
+        setLoading(false);
         return;
       }
 
-      console.log("Post created successfully:", data);
       setSuccess(true);
-
-      // Reset form
       setTitle("");
       setCategory("Uncategorized");
       setDescription("");
       setThumbnail(null);
-
-      // Navigate to posts page
       navigate("/posts");
     } catch (err) {
-      console.error("Unexpected error during post creation:", err);
       setError("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
@@ -146,9 +103,7 @@ const CreatePost = () => {
         <div className="createPost__content">
           <h2>Create Post</h2>
           {error && <div className="error-message">{error}</div>}
-          {success && (
-            <div className="success-message">Post created successfully!</div>
-          )}
+          {success && <div className="success-message">Post created successfully!</div>}
           <form onSubmit={handleSubmit} className="createPost__form">
             <div className="form-group">
               <label htmlFor="title">Title</label>

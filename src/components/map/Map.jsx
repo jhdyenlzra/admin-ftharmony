@@ -39,8 +39,8 @@ export default function Map() {
   const [clickedItem, setClickedItem] = useState(null); // Currently clicked marker's details
 
   // Map center and zoom level
-  const center = { lng: 120.294113, lat: 14.83662 };
-  const zoom = 9.79;
+  const center = { lng: 120.28966, lat: 14.83167 };
+  const zoom = 14.27;
 
   // Set the MapTiler API key
   maptilersdk.config.apiKey = configData.MAPTILER_API_KEY;
